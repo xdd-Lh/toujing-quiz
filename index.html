@@ -1,0 +1,3583 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>投经刷题 · 投资经济学</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; background: #f4f1ea; color: #2b2b2b; }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 14px 14px 110px; }
+  header { text-align: center; padding: 10px 0 4px; }
+  header h1 { font-size: 22px; margin: 0; letter-spacing: 2px; }
+  header p { margin: 6px 0 0; font-size: 13px; color: #8a8578; }
+  .progress { height: 8px; background: #e4dfd3; border-radius: 99px; overflow: hidden; margin: 14px 0 4px; }
+  .progress > div { height: 100%; background: #2e9e6b; border-radius: 99px; transition: width .3s; width: 0; }
+  .stats { display: flex; justify-content: space-between; font-size: 12px; color: #8a8578; margin-bottom: 12px; }
+  .stats b { color: #2e9e6b; }
+  .stats .wrong b { color: #d65454; }
+  .modes { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 10px; scrollbar-width: none; }
+  .modes::-webkit-scrollbar { display: none; }
+  .chip { flex: 0 0 auto; border: 1.5px solid #d8d2c2; background: #fff; color: #6b6558; border-radius: 99px; padding: 7px 14px; font-size: 14px; cursor: pointer; }
+  .chip.on { background: #2e9e6b; border-color: #2e9e6b; color: #fff; font-weight: 600; }
+  .row { display: flex; gap: 8px; margin-bottom: 14px; }
+  select { flex: 1; border: 1.5px solid #d8d2c2; border-radius: 10px; background: #fff; padding: 9px 10px; font-size: 14px; color: #4a453a; }
+  .shuffle { flex: 0 0 auto; border: 1.5px solid #d8d2c2; border-radius: 10px; background: #fff; padding: 9px 12px; font-size: 14px; color: #6b6558; cursor: pointer; }
+  .shuffle.on { background: #e8f5ee; border-color: #2e9e6b; color: #2e9e6b; font-weight: 600; }
+  .card { background: #fff; border-radius: 18px; padding: 20px 18px; box-shadow: 0 4px 18px rgba(90,80,60,.10); }
+  .meta { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+  .tag { font-size: 12px; padding: 3px 9px; border-radius: 99px; background: #eef3f0; color: #5a6b60; }
+  .tag.star { background: #fdeceb; color: #c0392b; font-weight: 600; }
+  .tag.type { background: #e8f0fe; color: #3b5bdb; }
+  .stem { font-size: 17px; line-height: 1.65; font-weight: 600; margin: 0 0 16px; }
+  .opt { display: flex; align-items: flex-start; gap: 10px; width: 100%; text-align: left; background: #faf9f6; border: 1.5px solid #e3ded2; border-radius: 12px; padding: 13px 14px; margin-bottom: 10px; font-size: 15px; line-height: 1.55; color: #333; cursor: pointer; }
+  .opt .k { flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%; background: #e9e4d8; color: #6b6558; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; margin-top: 1px; }
+  .opt:disabled { cursor: default; opacity: .75; }
+  .opt.correct { background: #e6f6ec; border-color: #2e9e6b; }
+  .opt.correct .k { background: #2e9e6b; color: #fff; }
+  .opt.wrong { background: #fdeceb; border-color: #d65454; }
+  .opt.wrong .k { background: #d65454; color: #fff; }
+  .tfrow { display: flex; gap: 10px; }
+  .tf { flex: 1; padding: 15px 0; font-size: 17px; font-weight: 700; border-radius: 12px; border: 1.5px solid #e3ded2; background: #faf9f6; cursor: pointer; }
+  .tf.correct { background: #e6f6ec; border-color: #2e9e6b; color: #1e7a4f; }
+  .tf.wrong { background: #fdeceb; border-color: #d65454; color: #b03a3a; }
+  .tf:disabled { cursor: default; opacity: .75; }
+  .reveal { width: 100%; padding: 15px 0; font-size: 16px; font-weight: 700; border-radius: 12px; border: none; background: #2e9e6b; color: #fff; cursor: pointer; }
+  .answer-line { font-size: 16px; font-weight: 700; margin: 4px 0 10px; }
+  .answer-line .ok { color: #1e7a4f; }
+  .analysis { background: #fdf8e7; border-left: 4px solid #e8c85a; border-radius: 8px; padding: 12px 14px; font-size: 14px; line-height: 1.7; color: #5c5136; margin-top: 12px; }
+  .analysis b { color: #3d3420; }
+  .his { font-size: 13px; color: #b03a3a; background: #fdeceb; border-radius: 8px; padding: 8px 12px; margin-top: 10px; line-height: 1.6; }
+  .grade { display: flex; gap: 10px; margin-top: 14px; }
+  .grade button { flex: 1; padding: 13px 0; font-size: 16px; font-weight: 700; border-radius: 12px; cursor: pointer; }
+  .grade .know { background: #e6f6ec; border: 1.5px solid #2e9e6b; color: #1e7a4f; }
+  .grade .dunno { background: #fdeceb; border: 1.5px solid #d65454; color: #b03a3a; }
+  .nextbar { position: fixed; left: 0; right: 0; bottom: 0; padding: 12px 14px calc(12px + env(safe-area-inset-bottom)); background: linear-gradient(transparent, #f4f1ea 30%); display: none; }
+  .nextbar.show { display: block; }
+  .nextbar button { width: 100%; max-width: 612px; margin: 0 auto; display: block; padding: 15px 0; font-size: 17px; font-weight: 700; border: none; border-radius: 14px; background: #2e9e6b; color: #fff; cursor: pointer; box-shadow: 0 4px 14px rgba(46,158,107,.4); }
+  .end { text-align: center; padding: 26px 10px; }
+  .end .big { font-size: 52px; font-weight: 800; color: #2e9e6b; margin: 6px 0; }
+  .end p { color: #6b6558; font-size: 14px; line-height: 1.7; }
+  .end h3 { text-align: left; font-size: 15px; margin: 22px 0 8px; }
+  .wrongitem { text-align: left; background: #fff; border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; font-size: 14px; line-height: 1.6; box-shadow: 0 2px 8px rgba(90,80,60,.08); }
+  .wrongitem .a { color: #1e7a4f; font-weight: 700; }
+  .endbtns { display: flex; gap: 10px; margin-top: 18px; }
+  .endbtns button { flex: 1; padding: 14px 0; font-size: 16px; font-weight: 700; border-radius: 12px; cursor: pointer; }
+  .endbtns .primary { background: #2e9e6b; color: #fff; border: none; }
+  .endbtns .ghost { background: #fff; color: #4a453a; border: 1.5px solid #d8d2c2; }
+  .note { font-size: 12px; color: #a39c8b; text-align: center; margin-top: 16px; line-height: 1.6; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>投经刷题</h1>
+    <p>投资经济学 · 学习通 178 题 · 答案已按平台校准</p>
+  </header>
+  <div class="progress"><div id="bar"></div></div>
+  <div class="stats">
+    <span id="pos">第 0 / 0 题</span>
+    <span>答对 <b id="ok">0</b> · 答错 <span class="wrong"><b id="no">0</b></span></span>
+  </div>
+  <div class="modes" id="modes"></div>
+  <div class="row">
+    <select id="chapter"></select>
+    <button class="shuffle on" id="shuffle">🔀 打乱</button>
+  </div>
+  <div class="card" id="card"></div>
+  <div class="note">选择题点选项出答案；判断题点对 / 错；没完整选项的题是自测卡，先想答案再点开。做错的题自动进错题本，刷完可以只练错题。<br>第六章第 20–24 题等题干在平台上未完整记录，只看答案和解析记概念。</div>
+</div>
+<div class="nextbar" id="nextbar"><button id="nextbtn">下一题 →</button></div>
+
+<script>
+const DATA = [
+ {
+  "id": "ch1-1",
+  "chapter": 1,
+  "chapter_name": "投资的基本概念与理论",
+  "num": 1,
+  "type": "single",
+  "stem": "投资活动的出发点和归结点是（ ）",
+  "options": [
+   {
+    "key": "A",
+    "text": "经济效益"
+   },
+   {
+    "key": "B",
+    "text": "社会效益"
+   },
+   {
+    "key": "C",
+    "text": "环境效益"
+   },
+   {
+    "key": "D",
+    "text": "文化效益"
+   }
+  ],
+  "answer": "A",
+  "answer_text": "经济效益",
+  "his_answer": "A（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "投资的定义就是“经济主体为获取经济效益而垫付货币或其他资源、从事某项事业的经济活动”，经济效益是投资的出发点和归结点。社会效益、生态效益是投资顺带产生的，不是最根本的。",
+  "incomplete": false
+ },
+ {
+  "id": "ch1-2",
+  "chapter": 1,
+  "chapter_name": "投资的基本概念与理论",
+  "num": 2,
+  "type": "single",
+  "stem": "下列说法错误的是（ ）",
+  "options": [
+   {
+    "key": "A",
+    "text": "投资主体、投资目的、投资方式和投资行为的内在特点及其相互关系，反映了投资这一经济范畴的质的规定性"
+   },
+   {
+    "key": "B",
+    "text": "投资的含义具有双重意义：它既是指一种特定的经济活动，又意味着是一种特种资金"
+   },
+   {
+    "key": "C",
+    "text": "随着资本主义生产力和商品经济高度发展，占有资本同运用资本相结合，已日益成为资本运用的一种重要形式"
+   },
+   {
+    "key": "D",
+    "text": "为获取最大利润而投入资本是投资的实质"
+   }
+  ],
+  "answer": "C",
+  "answer_text": "随着资本主义生产力和商品经济高度发展，占有资本同运用资本相结合，已日益成为资本运用的一种重要形式",
+  "his_answer": "C（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "资本主义发展到一定阶段，资本的**所有权和使用权是相分离的**（有钱的不直接经营，经营的向有钱的借钱），不是“相结合”，C 把这个关键概念说反了。B 是对的：投资既指一种经济活动，又指运用这种活动的资金（双重含义）。D 的说法在教材里是作为投资实质的一种表述，A 也是教材原话。",
+  "incomplete": false
+ },
+ {
+  "id": "ch1-3",
+  "chapter": 1,
+  "chapter_name": "投资的基本概念与理论",
+  "num": 3,
+  "type": "single",
+  "stem": "将投资分为直接投资和间接投资，是按照其（ ）来划分的",
+  "options": [
+   {
+    "key": "A",
+    "text": "投资主体的不同"
+   },
+   {
+    "key": "B",
+    "text": "投资运用方式的不同"
+   },
+   {
+    "key": "C",
+    "text": "按投资时限的不同"
+   },
+   {
+    "key": "D",
+    "text": "按投资资产的形态不同"
+   }
+  ],
+  "answer": "B",
+  "answer_text": "投资运用方式的不同",
+  "his_answer": "B（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "直接投资是钱直接投到项目建设、买设备原材料；间接投资是买股票、债券。分法看的是钱**怎么用**，不是谁投、投多久、投什么形态的资产。",
+  "incomplete": false
+ },
+ {
+  "id": "ch1-4",
+  "chapter": 1,
+  "chapter_name": "投资的基本概念与理论",
+  "num": 4,
+  "type": "single",
+  "stem": "下列不属于股票和债券的不同点的是（ ）",
+  "options": [
+   {
+    "key": "A",
+    "text": "股票是一种所有权，债券是一种债权"
+   },
+   {
+    "key": "B",
+    "text": "持有股票的股东可以参与企业的经营与决策，债权人则不可以"
+   },
+   {
+    "key": "C",
+    "text": "当企业破产时，在清偿的顺序上股票优先于债券，风险要比债券为小"
+   },
+   {
+    "key": "D",
+    "text": "从风险程度上看，对投资者来说股票的风险大于债券"
+   }
+  ],
+  "answer": "C",
+  "answer_text": "当企业破产时，在清偿的顺序上股票优先于债券，风险要比债券为小",
+  "his_answer": "C（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "企业破产清算时是**债券先于股票**得到清偿，股票的风险比债券大，C 把顺序和风险大小都说反了。A、B、D 都是对的：股票是所有权、能参与决策、风险大于债券。",
+  "incomplete": false
+ },
+ {
+  "id": "ch1-5",
+  "chapter": 1,
+  "chapter_name": "投资的基本概念与理论",
+  "num": 5,
+  "type": "judge",
+  "stem": "直接投资是投资的重要方式之一，它直接运用于购买股票、债券，形成金融资产。",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "错（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "直接投资是钱直接用于项目建设、买设备和原材料；买股票、债券形成金融资产的是**间接投资**。这道题把两个概念的定义互换了。",
+  "incomplete": false
+ },
+ {
+  "id": "ch1-6",
+  "chapter": 1,
+  "chapter_name": "投资的基本概念与理论",
+  "num": 6,
+  "type": "judge",
+  "stem": "以货币资金（或资本）垫付为特征的投资活动是连续性的活动，它不是一次完成的。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "投资的实质是资本的运动，资金要经过“货币→生产→商品→增值货币”不断循环，投资活动本身就是连续的，不是一次性投完就结束的。",
+  "incomplete": false
+ },
+ {
+  "id": "ch1-7",
+  "chapter": 1,
+  "chapter_name": "投资的基本概念与理论",
+  "num": 7,
+  "type": "judge",
+  "stem": "政府的财政投资，其目的是推动福利的最大化，企业和个人的投资则是以利益最大化为追求目标的。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "企业、个人投资追求利益最大化；政府财政投资（修公路、社区健身器材等）追求福利最大化。这是投资目的的基本区分。",
+  "incomplete": false
+ },
+ {
+  "id": "ch1-8",
+  "chapter": 1,
+  "chapter_name": "投资的基本概念与理论",
+  "num": 8,
+  "type": "judge",
+  "stem": "间接投资是基础，直接投资是寄生在间接投资上的寄生物，直接投资的收益来源于间接投资。",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "错（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "正好说反了。**直接投资才是基础**，它形成真实的厂房、设备和生产能力；间接投资（买股票债券）是建立在直接投资之上的，没有直接投资创造的真实资产，证券就是一张空纸。",
+  "incomplete": false
+ },
+ {
+  "id": "ch1-9",
+  "chapter": 1,
+  "chapter_name": "投资的基本概念与理论",
+  "num": 9,
+  "type": "judge",
+  "stem": "直接投资按其性质不同可以划分为生产性建设投资和非生产性建设投资。",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "对（✗ 答错）",
+  "was_wrong": true,
+  "analysis": "生产性 / 非生产性建设投资是按**用途**分的，不是按性质分。按性质分是基本建设投资、更新改造投资、其他固定资产投资。- 错因：把“按性质”和“按用途”两个分类标准记混了。考试就爱这样换一个定语考你，记住：**性质→基本建设 / 更新改造；用途→生产性 / 非生产性**。---",
+  "incomplete": false
+ },
+ {
+  "id": "ch2-1",
+  "chapter": 2,
+  "chapter_name": "投资规模",
+  "num": 1,
+  "type": "single",
+  "stem": "下列说法正确的是（ ）",
+  "options": [
+   {
+    "key": "A",
+    "text": "年度投资规模总是大于同期的在建投资规模"
+   },
+   {
+    "key": "B",
+    "text": "在建投资规模主要影响当年社会经济的供求平衡；而年度投资规模不仅影响当年的经济供求平衡，更主要的是将对国民经济产生持久性的影响"
+   },
+   {
+    "key": "C",
+    "text": "年度投资规模调节的难度较大，而在建投资规模调节起来相对容易"
+   },
+   {
+    "key": "D",
+    "text": "年度投资规模的大小，主要受当年的建设物资生产供应总量以及国家或地区财力状况的影响"
+   }
+  ],
+  "answer": "D",
+  "answer_text": "年度投资规模的大小，主要受当年的建设物资生产供应总量以及国家或地区财力状况的影响",
+  "his_answer": "D（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "A 错，年度和在建没有谁总比谁大的关系。B 说反了：**年度**影响当年的供求平衡，**在建**才对国民经济产生持久影响。C 说反了：在建投资规模调整难度大。D 是对的，年度投资规模受当年物资供应总量和财力状况影响。",
+  "incomplete": false
+ },
+ {
+  "id": "ch2-2",
+  "chapter": 2,
+  "chapter_name": "投资规模",
+  "num": 2,
+  "type": "single",
+  "stem": "投资率越高，则下列无法说明的是（ ）",
+  "options": [
+   {
+    "key": "A",
+    "text": "当年投资规模占 GDP 的比重越大"
+   },
+   {
+    "key": "B",
+    "text": "用于消费的部分的比重相应缩小"
+   },
+   {
+    "key": "C",
+    "text": "用于固定资产积累的部分的比重相应缩小"
+   },
+   {
+    "key": "D",
+    "text": "用于流动资产积累的部分的比重相应缩小"
+   }
+  ],
+  "answer": "C",
+  "answer_text": "用于固定资产积累的部分的比重相应缩小",
+  "his_answer": "C（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "投资率 = 年度固定资产投资额 / GDP。投资率高，说明当年投的钱占 GDP 比重大（A 能说明），消费和流动资产积累的比重就被挤小了（B、D 能说明）。但投资率高恰恰说明**用于固定资产积累的比重是变大不是变小**，所以 C 是“无法说明”的。",
+  "incomplete": false
+ },
+ {
+  "id": "ch2-3",
+  "chapter": 2,
+  "chapter_name": "投资规模",
+  "num": 3,
+  "type": "single",
+  "stem": "下列说法不正确的是（ ）",
+  "options": [
+   {
+    "key": "A",
+    "text": "年度投资规模具有波动增长的规律，从短期来看表现为波动性，从长期来看表现为增长性"
+   },
+   {
+    "key": "B",
+    "text": "年度投资规模的变动规律是指一个年度内建造和购置固定资产的资金量以及与此相关的全部费用，通常用投资率和投资贡献率两项指标衡量"
+   },
+   {
+    "key": "C",
+    "text": "合理的在建投资规模是确定年度投资规模合理数量界限的基础"
+   },
+   {
+    "key": "D",
+    "text": "年度投资规模和在建投资规模两者变动的方向和变化幅度不同"
+   }
+  ],
+  "answer": "C",
+  "answer_text": "合理的在建投资规模是确定年度投资规模合理数量界限的基础。",
+  "his_answer": "C（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "C 是对的：合理的在建投资规模是确定年度投资规模合理数量界限的基础。A 也是对的（年度规模短期波动、长期增长）；D 也是对的（两者变动方向和幅度不同）；B 是错的——“一个年度内建造和购置固定资产的资金量以及与此相关的全部费用”是**年度投资规模的定义**，不是“变动规律”，投资率和投资贡献率是**衡量指标**，也不是变动规律。- 注意：本题平台答案是 C；C 本身是正确表述，初稿题干记为“不正确的是”与答案对不上，疑似题干记录有误（应为“正确的是”），学概念时记住 C 这句话，考试前对照学习通核对题干。",
+  "incomplete": false
+ },
+ {
+  "id": "ch2-4",
+  "chapter": 2,
+  "chapter_name": "投资规模",
+  "num": 4,
+  "type": "single",
+  "stem": "下列各项不属于投资规模确定原则的是（ ）",
+  "options": [
+   {
+    "key": "A",
+    "text": "根据需要与可能确定投资规模的原则"
+   },
+   {
+    "key": "B",
+    "text": "根据先投资后消费的顺序确定投资规模的原则"
+   },
+   {
+    "key": "C",
+    "text": "根据先消费后投资的顺序确定投资规模的原则"
+   },
+   {
+    "key": "D",
+    "text": "瞻前顾后、留有余地的原则"
+   }
+  ],
+  "answer": "B",
+  "answer_text": "根据先投资后消费的顺序确定投资规模的原则",
+  "his_answer": "B（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "三条原则是：根据需要与可能、先消费后投资、瞻前顾后留有余地。顺序是**先保证生产生活的消费需要，再考虑固定资产投资**，B 把顺序说反了。",
+  "incomplete": false
+ },
+ {
+  "id": "ch2-5",
+  "chapter": 2,
+  "chapter_name": "投资规模",
+  "num": 5,
+  "type": "single",
+  "stem": "下列说法不正确的是（ ）",
+  "options": [
+   {
+    "key": "A",
+    "text": "实际建设周期是按一定年度实际铺开的在建投资规模和实际完成的年度投资规模计算的"
+   },
+   {
+    "key": "B",
+    "text": "合理建设周期是指在现有的技术条件和组织管理条件下，实际的在建项目需多少年完成"
+   },
+   {
+    "key": "C",
+    "text": "如果实际建设周期短于合理建设周期，说明在建投资规模过大，或者年度投资规模过小"
+   },
+   {
+    "key": "D",
+    "text": "在“在建总规模 = 年度投资规模 × 合理建设周期”一式中，年度投资规模是指一定时期的平均的适度年度投资规模，而不是某一特殊年份的投资规模"
+   }
+  ],
+  "answer": "C",
+  "answer_text": "如果实际建设周期短于合理建设周期，说明在建投资规模过大，或者年度投资规模过小",
+  "his_answer": "C（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "实际建设周期 = 在建投资规模 / 年度投资规模。如果实际周期比合理周期短，说明分子（在建）偏小或分母（年度）偏大，即**在建投资规模过小，或者年度投资规模过大**，C 正好说反了。A、B、D 都是对的。",
+  "incomplete": false
+ },
+ {
+  "id": "ch2-6",
+  "chapter": 2,
+  "chapter_name": "投资规模",
+  "num": 6,
+  "type": "judge",
+  "stem": "年度投资规模的大小与当年的实际施工力量、投资品供求量和投资资金可供量无必然联系。",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "错（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "恰恰有必然联系。年度投资规模主要受当年建设物资生产供应总量和财力状况影响，施工力量、投资品供求、资金可供量都是决定它的直接因素。",
+  "incomplete": false
+ },
+ {
+  "id": "ch2-7",
+  "chapter": 2,
+  "chapter_name": "投资规模",
+  "num": 7,
+  "type": "judge",
+  "stem": "如果一定年度的投资安排过多，新开工的项目大量增加，最终会导致在建投资规模的扩大。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "新开工项目多了，在建项目总数就多了，在建投资规模（全部在建项目建成所需的投资总额）自然扩大。",
+  "incomplete": false
+ },
+ {
+  "id": "ch2-8",
+  "chapter": 2,
+  "chapter_name": "投资规模",
+  "num": 8,
+  "type": "judge",
+  "stem": "年度固定资产投资规模呈现出短期波动和长期增长的态势。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "这是年度投资规模的基本变动规律：短期看波动（受经济波动、分配政策、技术政策影响），长期看增长（折旧基金越来越多、消费增长相对慢、金融创新推动）。",
+  "incomplete": false
+ },
+ {
+  "id": "ch2-9",
+  "chapter": 2,
+  "chapter_name": "投资规模",
+  "num": 9,
+  "type": "judge",
+  "stem": "从长远看来，建设周期的增长成为一个必然的趋势。",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "错（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "按平台答案，这句话是错的。课件里只说在建规模相对稳定增长、建设周期正常年份 3.1–3.7，没有“建设周期增长是必然趋势”这个说法；建设周期长短取决于在建规模和年度规模的对比，不是必然增长的。以平台为准。",
+  "incomplete": false
+ },
+ {
+  "id": "ch2-10",
+  "chapter": 2,
+  "chapter_name": "投资规模",
+  "num": 10,
+  "type": "judge",
+  "stem": "只要投资规模是有利于社会总供求平衡的，它就是合理的投资规模。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "错（✗ 答错）",
+  "was_wrong": true,
+  "analysis": "按平台答案，这句话是对的；但注意课件里适度投资规模的判别标准不止总供求平衡一条，还有投资增长率与 GDP 增长率比较、积累率 / 投资率水平等。考试如果问判别标准要答全，不能只答总供求平衡。- 错因：这道题平台答案和课件说法有出入：课件把总供求平衡列为理论标准之一，不是唯一标准；平台却判“只要有利于总供求平衡就是合理的”为对。以平台为准，但判别标准要记全。",
+  "incomplete": false
+ },
+ {
+  "id": "ch2-11",
+  "chapter": 2,
+  "chapter_name": "投资规模",
+  "num": 11,
+  "type": "judge",
+  "stem": "提高投资规模调控效率的最根本途径是先要使企业形成自我约束机制。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "调控的第一条方法就是建立健全市场约束机制，让企业建立现代企业制度、形成自我约束。企业自己不乱投资，规模调控才有效率。- 注意：这道题在作业详情里显示答对，却被列进了错题集，是平台记录对不上的 5 道题之一，以作业详情为准。---",
+  "incomplete": false
+ },
+ {
+  "id": "ch3-1",
+  "chapter": 3,
+  "chapter_name": "投资结构",
+  "num": 1,
+  "type": "single",
+  "stem": "下列各项中正确的是（ ）",
+  "options": [
+   {
+    "key": "A",
+    "text": "投资的主体结构是投资结构中最重要的结构，是投资结构体系的主体和基础"
+   },
+   {
+    "key": "B",
+    "text": "投资的项目性质结构包括预算内、预算外投资比例，财政投资、信贷投资、自筹投资、直接融资投资和利用外资的比例关系"
+   },
+   {
+    "key": "C",
+    "text": "投资的项目性质结构还包括投资的技术结构和投资的再生产结构"
+   },
+   {
+    "key": "D",
+    "text": "一般意义上的投资主体结构是指政府、企业和社会团体投资的比例关系"
+   }
+  ],
+  "answer": "D",
+  "answer_text": "一般意义上的投资主体结构是指政府、企业和社会团体投资的比例关系",
+  "his_answer": "A（✗ 答错）",
+  "was_wrong": true,
+  "analysis": "A 错，最重要的结构是**产业结构**，不是主体结构。B 错，预算内 / 预算外、财政 / 信贷 / 自筹 / 直接融资 / 利用外资的比例是**来源结构**，不是项目性质结构。C 错，技术结构和再生产结构属于**用途结构**。D 是唯一正确的：主体结构就是不同投资主体（政府、企业、社会团体等）在投资总量中的比例关系。- 错因：七种投资结构分类（主体、项目性质、来源、产业、区域、用途、项目规模）互相串了。记住：**最重要的是产业结构；钱从哪来是来源结构；技术和再生产是用途结构**。",
+  "incomplete": false
+ },
+ {
+  "id": "ch3-2",
+  "chapter": 3,
+  "chapter_name": "投资结构",
+  "num": 2,
+  "type": "single",
+  "stem": "下列有关投资优化标准的说法中正确的是（ ）",
+  "options": [
+   {
+    "key": "A",
+    "text": "投资结构优化的动态标准是一定投资规模基础上能达到最大产出或利润的投资结构"
+   },
+   {
+    "key": "B",
+    "text": "投资结构优化的静态标准是能够使国民经济在较长时期取得最快增长的结构比例"
+   },
+   {
+    "key": "C",
+    "text": "投资结构与资源结构相适应，可以充分发挥各种资源的优势，可以以最少的劳动耗费获得最大的投资效益，有利于发展社会生产力"
+   },
+   {
+    "key": "D",
+    "text": "合理的投资结构可以获得投资项目本身的最大效益，但是与促进产业、部门经济结构的合理化是相矛盾的"
+   }
+  ],
+  "answer": "C",
+  "answer_text": "投资结构与资源结构相适应，可以充分发挥各种资源的优势，可以以最少的劳动耗费获得最大的投资效益，有利于发展社会生产力",
+  "his_answer": "C（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "A、B 把静态和动态标准说反了：**静态标准**是一定投资规模下能达到最大产出或利润的结构，**动态标准**是能让国民经济较长时期最快增长的结构。D 错，合理的投资结构既能让项目本身效益最大，又能促进产业结构合理化，两者是一致的，不矛盾。",
+  "incomplete": false
+ },
+ {
+  "id": "ch3-3",
+  "chapter": 3,
+  "chapter_name": "投资结构",
+  "num": 3,
+  "type": "single",
+  "stem": "下列属于投资结构优化原则的是（ ）",
+  "options": [
+   {
+    "key": "A",
+    "text": "关键产业超前发展的原则"
+   },
+   {
+    "key": "B",
+    "text": "基础部门重点投资的原则"
+   },
+   {
+    "key": "C",
+    "text": "推进技术进步的原则"
+   },
+   {
+    "key": "D",
+    "text": "存量调整与增量调节独立进行的原则"
+   }
+  ],
+  "answer": "C",
+  "answer_text": "推进技术进步的原则",
+  "his_answer": "C（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "四条原则是：关键产业**重点投资**、基础部门**超前发展**、推进技术进步、存量调整与增量调节**配套进行**。A 和 B 把“重点投资”和“超前发展”安错了对象，D 的“独立进行”应为“配套进行”。",
+  "incomplete": false
+ },
+ {
+  "id": "ch3-4",
+  "chapter": 3,
+  "chapter_name": "投资结构",
+  "num": 4,
+  "type": "single",
+  "stem": "投资结构与产业结构之间关系应该说是投资与经济结构的最重要的关系。下列关于两者关系的说法中有误的是（ ）",
+  "options": [
+   {
+    "key": "A",
+    "text": "产业结构通过影响资产的存量结构进而决定了投资结构的变化和调整"
+   },
+   {
+    "key": "B",
+    "text": "从长时期来看，投资结构决定着产业结构的形成和变化"
+   },
+   {
+    "key": "C",
+    "text": "现有的产业结构对投资结构有一种制约作用"
+   },
+   {
+    "key": "D",
+    "text": "两者之间存在着相互联系、相互影响、相互制约的关系"
+   }
+  ],
+  "answer": "A",
+  "answer_text": "产业结构通过影响资产的存量结构进而决定了投资结构的变化和调整。",
+  "his_answer": "A（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "B、C、D 都是对的：长时期看投资结构决定产业结构，现有产业结构反过来制约投资结构，两者相互联系、相互影响、相互制约。A 的毛病在“决定了”这个词：产业结构对投资结构是**制约**作用，不是决定作用，决定作用在投资结构那边。",
+  "incomplete": false
+ },
+ {
+  "id": "ch3-5",
+  "chapter": 3,
+  "chapter_name": "投资结构",
+  "num": 5,
+  "type": "single",
+  "stem": "产业结构的变化趋势在第三阶段体现为（ ）",
+  "options": [
+   {
+    "key": "A",
+    "text": "第一产业的比重下降，但仍占相当大的比例，现代工业较快地发展，第二产业的比重逐渐上升，第三产业也逐步增长"
+   },
+   {
+    "key": "B",
+    "text": "第二产业得到了重大的发展，迅速成为国民经济的主导产业，第一产业退居第二位，第三产业的比重明显上升"
+   },
+   {
+    "key": "C",
+    "text": "第一产业的比重已降低到一定的位置，第二产业的比重呈稳中下降趋势，第三产业发展速度迅猛，取代第二产业而在国民经济中居于首位"
+   },
+   {
+    "key": "D",
+    "text": "第一产业在国民经济中占据主导地位，现代工业处于萌芽状态，农业占据绝对大的位置，第三产业基本上是一些必需的消费性的部门"
+   }
+  ],
+  "answer": "B",
+  "answer_text": "第二产业得到了重大的发展，迅速成为国民经济的主导产业，第一产业退居第二位，第三产业的比重明显上升",
+  "his_answer": "C（✗ 答错）",
+  "was_wrong": true,
+  "analysis": "工业化四阶段要按顺序记：第一阶段第一产业占主导（D）；**第二阶段**第一产业比重下降但仍占相当大比例，第二产业比重上升（A）；**第三阶段**第二产业成为主导产业，第一产业退居第二，第三产业比重明显上升（B）；**第四阶段**第三产业取代第二产业居首位（C）。- 错因：把第二阶段和第三阶段搞混了。记住关键词：**第二阶段是“第二产业比重上升”，第三阶段是“第二产业成为主导”**。",
+  "incomplete": false
+ },
+ {
+  "id": "ch3-6",
+  "chapter": 3,
+  "chapter_name": "投资结构",
+  "num": 6,
+  "type": "judge",
+  "stem": "一定的产业结构是由过去历年的投资结构塑造出来的，即投资结构决定了产业结构的形成和变化。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "长时期看，投资结构决定产业结构的形成和变化，今天的产业结构就是过去历年投资累积塑造出来的。",
+  "incomplete": false
+ },
+ {
+  "id": "ch3-7",
+  "chapter": 3,
+  "chapter_name": "投资结构",
+  "num": 7,
+  "type": "judge",
+  "stem": "产业结构分类中的两大部类分类法是指生产资料的生产部门和消费资料的生产部门。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "马克思把社会总生产的物质生产部门分为两大部类：生产资料的生产和消费资料的生产。这就是两大部类分类法。",
+  "incomplete": false
+ },
+ {
+  "id": "ch3-8",
+  "chapter": 3,
+  "chapter_name": "投资结构",
+  "num": 8,
+  "type": "judge",
+  "stem": "产业结构的变化趋势在第二阶段的体现是，在这个阶段第二产业得到了重大的发展，迅速成为国民经济的主导产业，第一产业退居第二位，第三产业的比重明显上升，这一阶段结束表明国家已基本完成了国民经济的工……（题干在平台上显示不完整，在此截断）",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "对（✗ 答错）",
+  "was_wrong": true,
+  "analysis": "题干描述的“第二产业成为主导产业、第一产业退居第二、第三产业比重明显上升”是**第三阶段**的特征，不是第二阶段的。第二阶段只是第二产业比重上升，第一产业仍占相当大比例。- 错因：描述本身是对的，但安错了阶段。注意这道题的题干在平台上就是截断的，末尾“国民经济的工……”看不到，考试如果出原题，按“第二阶段≠第二产业当主导”这个点判断。- 注意：本题题干不完整，解析按能看到的部分写。",
+  "incomplete": false
+ },
+ {
+  "id": "ch3-9",
+  "chapter": 3,
+  "chapter_name": "投资结构",
+  "num": 9,
+  "type": "judge",
+  "stem": "改革开放以来在投资来源结构中国家财政投资的比重趋于下降，但投资主体结构则呈现出国家投资的比重逐渐上升。",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "错（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "前半句对，国家财政投资比重确实趋于下降；后半句错，投资主体结构是**多元化**的，国家投资的比重也是下降的（2014 年国家预算内资金只占全社会固定资产投资的 5.22%），不是上升。",
+  "incomplete": false
+ },
+ {
+  "id": "ch3-10",
+  "chapter": 3,
+  "chapter_name": "投资结构",
+  "num": 10,
+  "type": "judge",
+  "stem": "在投资结构的调控目标中，以产业结构高级化为目的，是指随着科学技术的发展，通过调控投资结构，促使各产业由劳动密集型向资金、技术、知识密集型转化，提高产业竞争力。",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "对（✗ 答错）",
+  "was_wrong": true,
+  "analysis": "题干描述的是**产业升级**，不是产业结构高级化。产业结构高级化是指产业结构由第一产业为主向第二产业为主、再向第三产业为主转换；由劳动密集型向资金、技术、知识密集型转化、提高产业竞争力，那是“产业升级”的定义。- 错因：三个调控目标（协调产业结构、产业结构高级化、产业升级）的定义张冠李戴了。记住：**高级化 = 一产→二产→三产的转换；升级 = 劳动密集型→资金技术知识密集型**。---",
+  "incomplete": false
+ },
+ {
+  "id": "ch4-1",
+  "chapter": 4,
+  "chapter_name": "投资环境",
+  "num": 1,
+  "type": "single",
+  "stem": "下列不属于软环境的是（ ）",
+  "options": [
+   {
+    "key": "A",
+    "text": "政策"
+   },
+   {
+    "key": "B",
+    "text": "交通"
+   },
+   {
+    "key": "C",
+    "text": "法令"
+   },
+   {
+    "key": "D",
+    "text": "技术水平"
+   }
+  ],
+  "answer": "B",
+  "answer_text": "交通",
+  "his_answer": "B（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "软环境是没有具体物质形态的要素（政策、法令、技术水平、行政管理效率等），硬环境是有物质形态的基础设施（能源、交通、通信）。交通是硬环境。",
+  "incomplete": false
+ },
+ {
+  "id": "ch4-2",
+  "chapter": 4,
+  "chapter_name": "投资环境",
+  "num": 2,
+  "type": "single",
+  "stem": "关于软环境和硬环境的说法中正确的是（ ）",
+  "options": [
+   {
+    "key": "A",
+    "text": "软环境和硬环境是依据投资环境研究层次的不同来划分的"
+   },
+   {
+    "key": "B",
+    "text": "软环境是投资环境的基础部分"
+   },
+   {
+    "key": "C",
+    "text": "硬环境属于投资环境的高层次部分，起主导作用"
+   },
+   {
+    "key": "D",
+    "text": "软硬环境是一个问题的两个方面，是相辅相成的关系"
+   }
+  ],
+  "answer": "D",
+  "answer_text": "软硬环境是一个问题的两个方面，是相辅相成的关系",
+  "his_answer": "D（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "A 错，软硬环境是按要素的**物质形态属性**分的，不是按研究层次（宏观 / 中观 / 微观才是按研究层次分）。B、C 说反了：**硬环境是基础部分，软环境是高层次部分、起主导作用**。",
+  "incomplete": false
+ },
+ {
+  "id": "ch4-3",
+  "chapter": 4,
+  "chapter_name": "投资环境",
+  "num": 3,
+  "type": "single",
+  "stem": "（ ）决定了整个社会投资的流向、数量和结构，同时也是外国投资者选择投资对象国时最先考虑因素。",
+  "options": [
+   {
+    "key": "A",
+    "text": "宏观投资环境"
+   },
+   {
+    "key": "B",
+    "text": "中观投资环境"
+   },
+   {
+    "key": "C",
+    "text": "微观投资环境"
+   },
+   {
+    "key": "D",
+    "text": "硬环境"
+   }
+  ],
+  "answer": "A",
+  "answer_text": "宏观投资环境",
+  "his_answer": "A（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "宏观投资环境是全国范围的国民经济发展、政治法律制度、文化传统等，它决定整个社会投资的流向、数量和结构，外国投资者选国家时最先看的就是它。中观是地区和产业层面，微观是具体项目选址层面。",
+  "incomplete": false
+ },
+ {
+  "id": "ch4-4",
+  "chapter": 4,
+  "chapter_name": "投资环境",
+  "num": 4,
+  "type": "single",
+  "stem": "评价要从实际出发，以事实为依据，既要看到区域投资环境现状，又要看到与此相关的一些问题，体现了投资环境评价的（ ）原则。",
+  "options": [
+   {
+    "key": "A",
+    "text": "系统性原则"
+   },
+   {
+    "key": "B",
+    "text": "目的性原则"
+   },
+   {
+    "key": "C",
+    "text": "客观性原则"
+   },
+   {
+    "key": "D",
+    "text": "比较性原则"
+   }
+  ],
+  "answer": "C",
+  "answer_text": "客观性原则",
+  "his_answer": "C（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "从实际出发、以事实为依据，就是客观性原则。系统性是全面综合评价，比较性是拿其他地区作参照，目的性是针对评估目的定主次因素。",
+  "incomplete": false
+ },
+ {
+  "id": "ch4-5",
+  "chapter": 4,
+  "chapter_name": "投资环境",
+  "num": 5,
+  "type": "single",
+  "stem": "下列说法正确的是（ ）",
+  "options": [
+   {
+    "key": "A",
+    "text": "多因素评估法中，投资环境总分的取值范围在 1—5 之间，愈接近 1，说明投资环境愈佳。反之，愈接近 5，则说明投资环境愈劣"
+   },
+   {
+    "key": "B",
+    "text": "抽样评估法的主要缺陷是评估结果往往带有被调查者的主观倾向，有可能使其与现实投资环境之间存在一定差距，而这又是无法解决的"
+   },
+   {
+    "key": "C",
+    "text": "在“冷热”因素分析法中，一般来说，“冷国”对外商投资的吸引力要大于“热国”"
+   },
+   {
+    "key": "D",
+    "text": "等级尺度评分法主要从东道国政府对外国投资者的限制和鼓励政策的角度出发，把投资环境的内容划分成了八大因素"
+   }
+  ],
+  "answer": "D",
+  "answer_text": "等级尺度评分法主要从东道国政府对外国投资者的限制和鼓励政策的角度出发，把投资环境的内容划分成了八大因素。",
+  "his_answer": "D（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "A 错，多因素评估法是把 11 类因素按优、良、中、可、差打分加权汇总，分数越高越好，不是“越接近 1 越佳”。B 的前半句对，但“无法解决”这个说法不准确，抽样评估法的主观倾向是它的缺陷，但不是这道题要选的正确表述。C 说反了：“热国”对外商投资的吸引力大于“冷国”。D 是对的，等级尺度评分法（斯托伯 1969 年提出）就是从东道国政府对外国投资者的限制和鼓励政策出发，把投资环境内容划分为八大因素。",
+  "incomplete": false
+ },
+ {
+  "id": "ch4-6",
+  "chapter": 4,
+  "chapter_name": "投资环境",
+  "num": 6,
+  "type": "single",
+  "stem": "下列选项中，（ ）是道氏公司制定的投资环境评价法。",
+  "options": [
+   {
+    "key": "A",
+    "text": "因子分析法"
+   },
+   {
+    "key": "B",
+    "text": "动态评价法"
+   },
+   {
+    "key": "C",
+    "text": "等级评价法"
+   },
+   {
+    "key": "D",
+    "text": "冷热对比法"
+   }
+  ],
+  "answer": "B",
+  "answer_text": "动态评价法",
+  "his_answer": "A（✗ 答错）",
+  "was_wrong": true,
+  "analysis": "道氏评估法全名就是“道氏公司投资环境**动态分析法**”。等级评价法（等级尺度评分法）是斯托伯提出来的，冷热对比法是利特法克和班廷提出来的，别张冠李戴。- 错因：评价方法的提出者记混了。记住：**道氏→动态；斯托伯→等级尺度；利特法克和班廷→冷热**。",
+  "incomplete": false
+ },
+ {
+  "id": "ch4-7",
+  "chapter": 4,
+  "chapter_name": "投资环境",
+  "num": 7,
+  "type": "single",
+  "stem": "投资者最看重的旅游投资环境要素是（ ）",
+  "options": [
+   {
+    "key": "A",
+    "text": "规范性文件"
+   },
+   {
+    "key": "B",
+    "text": "行政执法"
+   },
+   {
+    "key": "C",
+    "text": "司法公正"
+   },
+   {
+    "key": "D",
+    "text": "法律意识水平"
+   }
+  ],
+  "answer": "C",
+  "answer_text": "司法公正",
+  "his_answer": "C（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "旅游投资最怕有法不依、执法不公，投资者最看重的是司法能不能公正地、无歧视地对待每一个诉讼实体。规范性文件、行政执法、法律意识水平都重要，但司法公正是投资者信心的底线。平台答案也是 C，已校准。",
+  "incomplete": false
+ },
+ {
+  "id": "ch4-8",
+  "chapter": 4,
+  "chapter_name": "投资环境",
+  "num": 8,
+  "type": "judge",
+  "stem": "同一投资环境，对不同项目的投资影响相同。",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "错（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "投资环境有差异性，同一个环境对资源导向型项目和市场导向型项目的影响完全不同，不可能影响相同。",
+  "incomplete": false
+ },
+ {
+  "id": "ch4-9",
+  "chapter": 4,
+  "chapter_name": "投资环境",
+  "num": 9,
+  "type": "judge",
+  "stem": "按投资环境要素的物质形态属性不同，我们可以将投资环境分为宏观投资环境、中观投资环境和微观投资环境。",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "错（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "按物质形态属性分的是**硬环境和软环境**；宏观 / 中观 / 微观是按**研究层次**分的。这道题把两种分类标准拼错了。",
+  "incomplete": false
+ },
+ {
+  "id": "ch4-10",
+  "chapter": 4,
+  "chapter_name": "投资环境",
+  "num": 10,
+  "type": "judge",
+  "stem": "中观投资环境多指地区投资环境和产业投资环境，是介于上述两者之间的一个层次，承上启下。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "中观就是地区投资环境和产业投资环境，介于宏观（全国）和微观（具体项目）之间，承上启下。",
+  "incomplete": false
+ },
+ {
+  "id": "ch4-11",
+  "chapter": 4,
+  "chapter_name": "投资环境",
+  "num": 11,
+  "type": "judge",
+  "stem": "政治体制、政局的稳定性。这是影响境外投资活动的首要因素，因为“安全性”是境外投资的第一要求。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "政治法律环境里，政治体制和政局稳定性是第一位的，安全性是境外投资的第一要求。",
+  "incomplete": false
+ },
+ {
+  "id": "ch4-12",
+  "chapter": 4,
+  "chapter_name": "投资环境",
+  "num": 12,
+  "type": "judge",
+  "stem": "自然资源对那些以资源为导向的投资尤为重要。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "以资源为导向的投资（采矿、农业等）最依赖当地的自然资源禀赋，这句话本身就是教材原话。",
+  "incomplete": false
+ },
+ {
+  "id": "ch4-13",
+  "chapter": 4,
+  "chapter_name": "投资环境",
+  "num": 13,
+  "type": "judge",
+  "stem": "一般来说，市场的性质决定着投资的规模，市场的容量决定投资的流向，市场的结构决定了投资的结构，市场的发育程度决定了投资的发育程度。",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "错（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "前两个说反了：市场的**性质**决定投资的**流向**，市场的**容量**决定投资的**规模**，后两句（结构决定结构、发育程度决定发育程度）是对的。记住口诀：性质→流向，容量→规模。",
+  "incomplete": false
+ },
+ {
+  "id": "ch4-14",
+  "chapter": 4,
+  "chapter_name": "投资环境",
+  "num": 14,
+  "type": "judge",
+  "stem": "当国家实行宽松的财政政策和货币政策时，往往会提高贷款利率和法定存款准备金。",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "错（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "宽松政策是**降低**贷款利率和法定存款准备金率，放钱出来；提高利率和准备金率是紧缩政策。",
+  "incomplete": false
+ },
+ {
+  "id": "ch4-15",
+  "chapter": 4,
+  "chapter_name": "投资环境",
+  "num": 15,
+  "type": "judge",
+  "stem": "资本的本性是增值，它也是投资者最终追求的目标。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "资本的本性就是增值，投资者最终追求的就是资本增值。",
+  "incomplete": false
+ },
+ {
+  "id": "ch4-16",
+  "chapter": 4,
+  "chapter_name": "投资环境",
+  "num": 16,
+  "type": "judge",
+  "stem": "在国家风险等级法中，富兰德指数越高表示风险越高。指数越低表示风险越低。",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "错（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "按平台答案，这句话是错的。国家风险等级法是把各风险因素的大小分别打分量化再汇总；富兰德指数的指向笔记里没写（课件只写“看教材 P67–68”），平台判“指数越高表示风险越高”为错，以平台为准，考试前请对照教材核对。- 注意：这道题在作业详情里显示答对，却被列进了错题集，是平台记录对不上的 5 道题之一，以作业详情为准。---",
+  "incomplete": false
+ },
+ {
+  "id": "ch5-1",
+  "chapter": 5,
+  "chapter_name": "投资体制",
+  "num": 1,
+  "type": "single",
+  "stem": "以下哪个是投资体制的三大要素之一：（ ）",
+  "options": [
+   {
+    "key": "A",
+    "text": "投资主体"
+   },
+   {
+    "key": "B",
+    "text": "投资目的"
+   },
+   {
+    "key": "C",
+    "text": "投资的对象"
+   },
+   {
+    "key": "D",
+    "text": "投资的载体"
+   }
+  ],
+  "answer": "A",
+  "answer_text": "投资主体",
+  "his_answer": "A（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "投资体制的三要素是**投资主体、投资方式、投资调控体系**。投资目的、投资对象、投资载体是投资体制的动态构成内容，不是三要素。",
+  "incomplete": false
+ },
+ {
+  "id": "ch5-2",
+  "chapter": 5,
+  "chapter_name": "投资体制",
+  "num": 2,
+  "type": "single",
+  "stem": "下列说法错误的是：（ ）",
+  "options": [
+   {
+    "key": "A",
+    "text": "投资主体讲的是谁来投资的问题，分为法人和自然人两大类"
+   },
+   {
+    "key": "B",
+    "text": "房屋、机器、设备、原材料等财产物资以及商标、商誉、技术、管理经验等无形资产，也可用来投资。但这些资产必须首先需要估价，取得货币表现形态，以货币金额统一计量"
+   },
+   {
+    "key": "C",
+    "text": "投资决策主体的层次与结构的核心问题是投资决策权的集中与分散程度"
+   },
+   {
+    "key": "D",
+    "text": "投资资源的产权关系的基本功能是严格界定人们使用支配资源的范围、空间和方式"
+   }
+  ],
+  "answer": "D",
+  "answer_text": "投资资源的产权关系的基本功能是严格界定人们使用支配资源的范围、空间和方式。",
+  "his_answer": "A（✗ 答错）",
+  "was_wrong": true,
+  "analysis": "【平台答案与课件不一致，以平台为准】按平台答案，D 是错误的说法；但课件里投资主体分政府、企业、个人（不是法人和自然人两大类），产权关系在课件里是“界定人们行为关系的一种规则”、在投资体系诸要素中占主导地位——A 按课件看也是错的，D 按课件看是对的，平台答案与课件说法不一致。考试前请对照教材核对。- 错因：这道题四个选项按课件看，A（法人和自然人两大类）与课件的政府、企业、个人分法对不上，D（产权关系的基本功能是严格界定使用支配资源的范围、空间和方式）与课件“界定人们行为关系的一种规则”接近；平台判 D 错，说明题库对“基本功能”的表述另有说法。记住平台答案 D，考试前对照教材核对。",
+  "incomplete": false
+ },
+ {
+  "id": "ch5-3",
+  "chapter": 5,
+  "chapter_name": "投资体制",
+  "num": 3,
+  "type": "single",
+  "stem": "投资体制中占主导地位的是：（ ）",
+  "options": [
+   {
+    "key": "A",
+    "text": "投资决策主体的层次与结构"
+   },
+   {
+    "key": "B",
+    "text": "投资资源的产权关系"
+   },
+   {
+    "key": "C",
+    "text": "投资资源的协调方式"
+   },
+   {
+    "key": "D",
+    "text": "投资资源的运作模式"
+   }
+  ],
+  "answer": "B",
+  "answer_text": "投资资源的产权关系",
+  "his_answer": "A（✗ 答错）",
+  "was_wrong": true,
+  "analysis": "投资资源的产权关系在投资体系诸要素中占据主导地位，对其他两要素起支配作用：有什么样的产权关系，就有什么样的投资决策结构和协调方式与之相适应。- 错因：投资体制的静态构成有三个（决策主体的层次与结构、产权关系、协调方式），只有产权关系是占主导地位的，记住“产权关系占主导”。",
+  "incomplete": false
+ },
+ {
+  "id": "ch5-4",
+  "chapter": 5,
+  "chapter_name": "投资体制",
+  "num": 4,
+  "type": "single",
+  "stem": "我国投资体制第一次行政性分权是什么时期：（ ）",
+  "options": [
+   {
+    "key": "A",
+    "text": "国民经济恢复时期（1949 年–1952 年）"
+   },
+   {
+    "key": "B",
+    "text": "“一五”时期（1953 年–1957 年）"
+   },
+   {
+    "key": "C",
+    "text": "大跃进时期（1958 年–1960 年）"
+   },
+   {
+    "key": "D",
+    "text": "经济调整时期（1961 年–1965 年）"
+   }
+  ],
+  "answer": "C",
+  "answer_text": "大跃进时期(1958年-1960年)",
+  "his_answer": "C（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "1958 年大跃进，下放投资审批权限、计划管理改为块块管理为主、试行投资包干制，就是第一次行政性分权。第二次行政性分权在十年动乱时期。",
+  "incomplete": false
+ },
+ {
+  "id": "ch5-5",
+  "chapter": 5,
+  "chapter_name": "投资体制",
+  "num": 5,
+  "type": "single",
+  "stem": "我国试行投资包干制和再次实行投资包干制式分别是在哪两个时期：（ ）",
+  "options": [
+   {
+    "key": "A",
+    "text": "大跃进时期、经济调整时期"
+   },
+   {
+    "key": "B",
+    "text": "大跃进时期、十年动乱时期"
+   },
+   {
+    "key": "C",
+    "text": "“一五”时期、经济调整时期"
+   },
+   {
+    "key": "D",
+    "text": "“一五”时期、十年动乱时期"
+   }
+  ],
+  "answer": "B",
+  "answer_text": "大跃进时期、十年动乱时期",
+  "his_answer": "B（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "1958 年大跃进时期第一次试行投资包干制，十年动乱时期再次实行。记住“包干制”两次都和分权时期绑在一起。",
+  "incomplete": false
+ },
+ {
+  "id": "ch5-6",
+  "chapter": 5,
+  "chapter_name": "投资体制",
+  "num": 6,
+  "type": "single",
+  "stem": "中国人民建设银行的初次撤并、恢复建设银行建制、建设银行又一次撤而复设分别在哪个时期（ ）。",
+  "options": [
+   {
+    "key": "A",
+    "text": "大跃进时期、经济调整时期、十年动乱时期"
+   },
+   {
+    "key": "B",
+    "text": "大跃进时期、“一五”时期、十年动乱时期"
+   },
+   {
+    "key": "C",
+    "text": "大跃进时期、“一五”时期、拨乱反正时期"
+   },
+   {
+    "key": "D",
+    "text": "大跃进时期、经济调整时期、拨乱反正时期 （注：平台上 D 选项后混入了另一道题的文字——“8 我国投资体制的改革是从什么时候开始的：（B）A、1978 年 B、1979 年 C、1974 年 D、1975 年”，疑为题库录入错误；那道混入的题答案是 B、1979 年）"
+   }
+  ],
+  "answer": "A",
+  "answer_text": "大跃进时期、经济调整时期、十年动乱时期",
+  "his_answer": "A（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "1958 年大跃进初次撤并，1962 年经济调整时期恢复建行建制，十年动乱时期又一次撤并。三个时间点要和三个时期一一对应，别记串。- 注意：D 选项被题库污染了，考试如果出这道题，按 A 的三个时期记。",
+  "incomplete": false
+ },
+ {
+  "id": "ch5-7",
+  "chapter": 5,
+  "chapter_name": "投资体制",
+  "num": 7,
+  "type": "single",
+  "stem": "投资体制改革出现的第一个高潮是：（ ）",
+  "options": [
+   {
+    "key": "A",
+    "text": "改革的探索阶段"
+   },
+   {
+    "key": "B",
+    "text": "扩大改革阶段"
+   },
+   {
+    "key": "C",
+    "text": "深化改革探索阶段"
+   },
+   {
+    "key": "D",
+    "text": "强化改革阶段"
+   }
+  ],
+  "answer": "A",
+  "answer_text": "改革的探索阶段",
+  "his_answer": "B（✗ 答错）",
+  "was_wrong": true,
+  "analysis": "按平台答案，第一个高潮在改革的探索阶段（1979–1983 年，拨改贷试点、合同制、包干经济责任制）；扩大改革阶段（1984–1990）是把试点推广开来（拨改贷全面推广、央行确立、招投标推开）。笔记里没写“高潮”这个说法，以平台为准。- 错因：探索阶段和扩大改革阶段的时间线记混了。记住：**1979–1983 探索，1984–1990 扩大改革，第一个高潮按平台在探索阶段**。",
+  "incomplete": false
+ },
+ {
+  "id": "ch5-8",
+  "chapter": 5,
+  "chapter_name": "投资体制",
+  "num": 8,
+  "type": "single",
+  "stem": "在投资体制深化改革探索阶段为了改进投资管理体制，提出把投资项目分为三类，其中不包括哪一类？（ ）",
+  "options": [
+   {
+    "key": "A",
+    "text": "公益类"
+   },
+   {
+    "key": "B",
+    "text": "基础类"
+   },
+   {
+    "key": "C",
+    "text": "竞争类"
+   },
+   {
+    "key": "D",
+    "text": "效益类"
+   }
+  ],
+  "answer": "D",
+  "answer_text": "效益类",
+  "his_answer": "D（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "三类是公益类、基础类、竞争类，和第三章项目性质结构（竞争性、基础性、公益性）是同一套分类。没有“效益类”这一类。",
+  "incomplete": false
+ },
+ {
+  "id": "ch5-9",
+  "chapter": 5,
+  "chapter_name": "投资体制",
+  "num": 9,
+  "type": "single",
+  "stem": "下列不属于我国为提高政府投资建设的效益而采取的措施的是：（ ）",
+  "options": [
+   {
+    "key": "A",
+    "text": "将国家建委的投资管理职能并入国家计委，其他职能并入城乡建设环境保护部"
+   },
+   {
+    "key": "B",
+    "text": "对投资建设实行两级（中央和省级）管理，大中型项目由国家部门审批，小型（1000 万元以下）项目下放给地方政府审批，1 亿元以上的项目由国家计委核报国务院审批"
+   },
+   {
+    "key": "C",
+    "text": "让外资直接进入中国的项目建设"
+   },
+   {
+    "key": "D",
+    "text": "免征收国家能源重点建设基金和建筑税"
+   }
+  ],
+  "answer": "D",
+  "answer_text": "免征收国家能源重点建设基金和建筑税。",
+  "his_answer": "C（✗ 答错）",
+  "was_wrong": true,
+  "analysis": "按平台答案，D（免征收国家能源重点建设基金和建筑税）不属于提高政府投资建设效益的措施；A（机构改革并入计委）、B（两级管理）、C（让外资直接进入）都是 1980 年代为提高政府投资效益采取的措施。笔记里没展开这条，以平台为准。- 错因：这道题考的是 1980 年代的具体措施，笔记里没有展开，只能按平台答案记。",
+  "incomplete": false
+ },
+ {
+  "id": "ch5-10",
+  "chapter": 5,
+  "chapter_name": "投资体制",
+  "num": 10,
+  "type": "single",
+  "stem": "投资体制改革的主要措施包括：（ ）",
+  "options": [
+   {
+    "key": "A",
+    "text": "确立了个人投资主体的地位"
+   },
+   {
+    "key": "B",
+    "text": "规范了企业投资行为"
+   },
+   {
+    "key": "C",
+    "text": "改进了政府对投资宏观调控的手段"
+   },
+   {
+    "key": "D",
+    "text": "加强了对投资主体的监督管理"
+   }
+  ],
+  "answer": "C",
+  "answer_text": "改进了政府对投资宏观调控的手段",
+  "his_answer": "C（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "改革四项措施是：确立**企业**投资主体地位、规范**政府**投资行为、改进政府对投资宏观调控的手段、加强对**投资活动**的监督管理。A 把企业说成个人，B 把政府说成企业，D 把“投资活动”说成“投资主体”，都偷换了主语。",
+  "incomplete": false
+ },
+ {
+  "id": "ch5-11",
+  "chapter": 5,
+  "chapter_name": "投资体制",
+  "num": 11,
+  "type": "judge",
+  "stem": "投资体制的主要内容包括投资活动中的投资组织机构，投资主体的行为规范，投资决策制度选择，投资的责、权、利划分，投资资金筹措，投资实施与投资调控以及投资管理制度。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "这就是投资体制主要内容的教材原话，七项全包括，一项不少。",
+  "incomplete": false
+ },
+ {
+  "id": "ch5-12",
+  "chapter": 5,
+  "chapter_name": "投资体制",
+  "num": 12,
+  "type": "judge",
+  "stem": "一般意义的投资载体都是指资金，资金就是指货币。",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "错（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "投资载体不只是资金，还有实物（房屋、机器设备）、土地、无形资产（商标、商誉、技术、管理经验）。“载体都是资金”把范围说窄了。",
+  "incomplete": false
+ },
+ {
+  "id": "ch5-13",
+  "chapter": 5,
+  "chapter_name": "投资体制",
+  "num": 13,
+  "type": "judge",
+  "stem": "投资的目的是为了取得预期收益，预期收益表现为货币的增值。",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "对（✗ 答错）",
+  "was_wrong": true,
+  "analysis": "投资收益既可以是货币增值，也可以是社会秩序的协调和人民生活质量的提高。政府投资追求的就是福利最大化，不是货币增值。这句话把投资目的说窄了，只说了货币增值这一种。- 错因：只记住了“投资为了赚钱”，忘了政府投资不以货币增值为目的。记住：**投资目的 = 货币增值 + 社会秩序协调 + 生活质量提高**。",
+  "incomplete": false
+ },
+ {
+  "id": "ch5-14",
+  "chapter": 5,
+  "chapter_name": "投资体制",
+  "num": 14,
+  "type": "judge",
+  "stem": "我国“一五”时期的投资体制是实行以国家投资为主导，投资主体多元化和高度集中的计划投资体制。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "错（✗ 答错）",
+  "was_wrong": true,
+  "analysis": "按平台答案，这句话是对的；但注意课件里一五时期是投资决策权高度集中、国家作为投资主体，主体多元化是恢复时期的特征——平台答案与课件说法不一致，以平台为准。考试答题时记住：一五 = 高度集中，恢复时期 = 多元化。- 错因：这道题平台答案和课件说法对不上，记住平台答案“对”，但概念上按课件记（一五高度集中、恢复时期多元化），考试前对照教材核对。",
+  "incomplete": false
+ },
+ {
+  "id": "ch5-15",
+  "chapter": 5,
+  "chapter_name": "投资体制",
+  "num": 15,
+  "type": "judge",
+  "stem": "大跃进时期，投资体制方面进行的调整有：下放投资审批权限、计划管理的条块关系上，改为条块管理为主。以地方管理为主，地方对国家基本建设有权调整和统筹安排等。",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "对（✗ 答错）",
+  "was_wrong": true,
+  "analysis": "错在一个字：大跃进是把条块关系改为**块块管理为主**（以地方管理为主），不是“条块管理为主”。“一五”时期才是“以条条管理为主”。这道题就是考你能不能分清“条条”“块块”“条块”三个词。- 错因：关键词记混。记住：**一五→条条为主；大跃进→块块为主**。",
+  "incomplete": false
+ },
+ {
+  "id": "ch5-16",
+  "chapter": 5,
+  "chapter_name": "投资体制",
+  "num": 16,
+  "type": "judge",
+  "stem": "我国是在经济调整时期，恢复中央集权的投资体制的。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "1961–1965 年经济调整时期，针对经济混乱提出“调整、巩固、充实、提高”八字方针，恢复了集中统一的投资管理体制。",
+  "incomplete": false
+ },
+ {
+  "id": "ch5-17",
+  "chapter": 5,
+  "chapter_name": "投资体制",
+  "num": 17,
+  "type": "judge",
+  "stem": "投资体制第一次行政性分权和第二次行政性分权分别在大跃进时期和十年动乱时期。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "第一次行政性分权在大跃进时期（1958–1960），第二次在十年动乱时期（1966–1976）。",
+  "incomplete": false
+ },
+ {
+  "id": "ch5-18",
+  "chapter": 5,
+  "chapter_name": "投资体制",
+  "num": 18,
+  "type": "judge",
+  "stem": "集中计划投资体制，在“一五”时期，是必要的。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "“一五”时期国家要集中力量搞重工业建设，财力物力都紧张，集中计划投资体制符合当时的国情，是必要的。",
+  "incomplete": false
+ },
+ {
+  "id": "ch5-19",
+  "chapter": 5,
+  "chapter_name": "投资体制",
+  "num": 19,
+  "type": "judge",
+  "stem": "拨乱反正时期我国的投资管理体制，是以高度集中统一的直接控制为主，并且主要是以指令性计划和行政办法管理为主，其基本特征是订计划、批项目、分投资。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "拨乱反正时期（1977–1978）整顿基本建设投资体制，恢复集中统一管理，特征就是“订计划、批项目、分投资”，以指令性计划和行政办法管理为主。",
+  "incomplete": false
+ },
+ {
+  "id": "ch5-20",
+  "chapter": 5,
+  "chapter_name": "投资体制",
+  "num": 20,
+  "type": "judge",
+  "stem": "我国投资体制的改革包括：探索阶段、扩大改革阶段、深化改革探索阶段、强化改革阶段、改革发展的新阶段 5 个阶段。",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "对（✗ 答错）",
+  "was_wrong": true,
+  "analysis": "按课件，改革开放以来分四个阶段：探索阶段（1979–1983）、扩大改革阶段（1984–1990）、深化改革探索阶段（1991–2003）、改革发展的新阶段（2004 年至今）。没有单独的“强化改革阶段”，2003 年十六届三中全会《决定》属于深化改革探索阶段的成果。- 错因：多记了一个阶段。记住：**改革就四个阶段，探索、扩大、深化、新阶段**。",
+  "incomplete": false
+ },
+ {
+  "id": "ch5-21",
+  "chapter": 5,
+  "chapter_name": "投资体制",
+  "num": 21,
+  "type": "judge",
+  "stem": "投资体制改革的目标的确立，打破了长期以来政府在投资领域统管一切的状况。",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "对（✗ 答错）",
+  "was_wrong": true,
+  "analysis": "按平台答案，这句话是错的；课件只说 2004 年《决定》确立了建立新型投资体制的目标，没说“目标的确立打破了统管一切”——打破统管一切是改革推进的结果，不是目标确立本身。以平台为准。- 错因：把“目标的确立”和“改革的推进”混为一谈了；记住：2004 年《决定》确立的是新型投资体制的目标。---",
+  "incomplete": false
+ },
+ {
+  "id": "ch6-1",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 1,
+  "type": "flash",
+  "stem": "以下不属于内源融资的特点的是（ ）",
+  "options": [],
+  "answer": "B",
+  "answer_text": "高风险性",
+  "his_answer": "B（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "内源融资的特点是自主性、有限性、低成本性、低风险性；高风险性是外源融资的特点（外源四特点：高效性、有偿性、高风险性、不稳定性）。记住口诀：内源“自主、有限、低成本、低风险”，外源“高效、有偿、高风险、不稳定”。",
+  "incomplete": true
+ },
+ {
+  "id": "ch6-2",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 2,
+  "type": "flash",
+  "stem": "关于直接融资与间接融资，说法正确的是（ ）",
+  "options": [],
+  "answer": "C",
+  "answer_text": "企业融资有内外之分，直接融资与间接融资属于外部融资的一种方式划分",
+  "his_answer": "C（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "融资按资金来源方向分内源和外源，按资金运动渠道分直接和间接；直接融资和间接融资都是从企业外部筹钱，所以是外部融资内部的两种方式划分。内源 / 外源看来源方向，直接 / 间接看要不要经过银行中介，别串了。",
+  "incomplete": true
+ },
+ {
+  "id": "ch6-3",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 3,
+  "type": "flash",
+  "stem": "企业筹集资本时，按是否出现新的法人来分类，可以分为公司融资和（ ）",
+  "options": [],
+  "answer": "A",
+  "answer_text": "项目融资",
+  "his_answer": "A（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "按是否出现新的法人分：公司融资（由现有企业筹集资金，不出现新法人）和项目融资（为建设和经营项目成立新的独立法人项目公司）。速记里有这条。",
+  "incomplete": true
+ },
+ {
+  "id": "ch6-4",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 4,
+  "type": "flash",
+  "stem": "关于公司融资与项目融资的说法错误的是（ ）",
+  "options": [],
+  "answer": "A",
+  "answer_text": "项目融资是一种以项目本身资产及其未来收益为基础的融资方式",
+  "his_answer": "A（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "按平台答案，A 是错误的说法；但课件里项目融资的定义就是“项目以自身盈利能力偿还债务、以自身资产做担保，又称现金流量融资”，A 的说法与课件定义一致。概念上记住项目融资的三个关键：成立新的独立法人项目公司、债权人对发起人没有追索权或只有有限追索权、项目以自身盈利能力偿还债务、以自身资产做担保。考试前请对照学习通核对本题。",
+  "incomplete": true
+ },
+ {
+  "id": "ch6-5",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 5,
+  "type": "flash",
+  "stem": "贷款期限在（ ）的贷款属于中期贷款。",
+  "options": [],
+  "answer": "C",
+  "answer_text": "1-5年",
+  "his_answer": "C（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "信贷融资按期限分三档：短期贷款 1 年以内（含 1 年），中期贷款 1–5 年（含 5 年），长期贷款 5 年以上。记住 1、5 两个分界点。",
+  "incomplete": true
+ },
+ {
+  "id": "ch6-6",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 6,
+  "type": "flash",
+  "stem": "企业向银行借入的期限在一年以内（含一年）的借款为短期贷款，下列属于短期贷款的是（ ）",
+  "options": [],
+  "answer": "B",
+  "answer_text": "信用贷款",
+  "his_answer": "B（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "短期贷款是 1 年以内（含 1 年）的借款，主要是流动资金贷款；信用贷款是以借款人信誉发放的贷款，期限通常较短。按平台答案记（本题其他选项未完整记录）。",
+  "incomplete": true
+ },
+ {
+  "id": "ch6-7",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 7,
+  "type": "flash",
+  "stem": "关于信贷融资的说法错误的是（ ）",
+  "options": [],
+  "answer": "A",
+  "answer_text": "信贷融资只能用于企业的生产经营活动，不能用于企业的投资活动",
+  "his_answer": "A（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "信贷融资既可以用于生产经营（流动资金贷款），也可以用于投资活动（固定资产贷款、技术改造贷款都属中长期贷款范围），A 把信贷融资的用途说窄了，是错的。",
+  "incomplete": true
+ },
+ {
+  "id": "ch6-8",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 8,
+  "type": "flash",
+  "stem": "信贷融资的优点有（ ）",
+  "options": [],
+  "answer": "B",
+  "answer_text": "银行提供贷款的额度大，贷款期限长，利率较低",
+  "his_answer": "B（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "银行贷款是企业最主要的外部融资渠道，额度大、期限可长、利率相对较低是它的优点。按平台答案记（本题其他选项未完整记录）。",
+  "incomplete": true
+ },
+ {
+  "id": "ch6-9",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 9,
+  "type": "flash",
+  "stem": "下列关于股票和债券的说法正确的是（ ）",
+  "options": [],
+  "answer": "D",
+  "answer_text": "债券的本质是债的证明书",
+  "his_answer": "D（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "债券的本质是债的证明书（债务人向债权人出具的、承诺还本付息的凭证），股票的本质是所有权证书。记住：股票 = 所有权，债券 = 债权。",
+  "incomplete": true
+ },
+ {
+  "id": "ch6-10",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 10,
+  "type": "flash",
+  "stem": "如果股票价格过低，下列说法不正确的是（ ）",
+  "options": [],
+  "answer": "C",
+  "answer_text": "股票价格过低，会使企业融资成本增加",
+  "his_answer": "C（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "概念上股价过低、发行同样股数筹到的钱少，融资成本确实会增加，C 看起来是对的；但平台把它判为“不正确”的选项，疑似题干或选项文字记录不完整。以平台为准，考试前请对照学习通核对本题。",
+  "incomplete": true
+ },
+ {
+  "id": "ch6-11",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 11,
+  "type": "flash",
+  "stem": "下列关于债券基本特征的说法正确的是（ ）",
+  "options": [],
+  "answer": "C",
+  "answer_text": "债券到期需要还本付息，债券价格与市场利率呈反向关系",
+  "his_answer": "C（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "债券的特征是偿还性、流动性、安全性、收益性：到期必须还本付息；市场利率上升时债券价格下降、利率下降时价格上升，两者反向。记住“利率升、债价跌”。",
+  "incomplete": true
+ },
+ {
+  "id": "ch6-12",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 12,
+  "type": "flash",
+  "stem": "当市场利率上升时，债券的价格会（ ）",
+  "options": [],
+  "answer": "B",
+  "answer_text": "下降",
+  "his_answer": "B（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "和第 11 题一个点：债券价格与市场利率呈反向关系，利率上升、债券价格下降。",
+  "incomplete": true
+ },
+ {
+  "id": "ch6-13",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 13,
+  "type": "flash",
+  "stem": "下列关于债券融资的优点说法正确的是（ ）",
+  "options": [],
+  "answer": "C",
+  "answer_text": "债券融资具有固定成本的特点",
+  "his_answer": "C（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "债券利息是固定的，计入成本，成本相对固定且较低，这是债券融资的优点之一。注意和股票融资对照：股票成本高、不用还本；债券成本低、到期还本付息。",
+  "incomplete": true
+ },
+ {
+  "id": "ch6-14",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 14,
+  "type": "flash",
+  "stem": "商业票据与下列哪些项目共同构成企业短期融资的主要方式：（ ）",
+  "options": [],
+  "answer": "D",
+  "answer_text": "企业向银行借款",
+  "his_answer": "D（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "企业短期融资的主要方式就是商业票据和向银行借款（短期贷款）这两块，记住这个搭配。",
+  "incomplete": true
+ },
+ {
+  "id": "ch6-15",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 15,
+  "type": "flash",
+  "stem": "下列关于贴现期限说法错误的是（ ）",
+  "options": [],
+  "answer": "B",
+  "answer_text": "贴现期限一般为3-6个月，最长不超过9个月",
+  "his_answer": "B（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "按平台答案，B 是错的；注意区分商业票据的发行期限（大中型企业 1–6 个月、大型金融公司 1–9 个月）和贴现期限，笔记里没写贴现期限的具体数字，以平台为准，考试前对照教材核对。",
+  "incomplete": true
+ },
+ {
+  "id": "ch6-16",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 16,
+  "type": "flash",
+  "stem": "下列关于承兑行的说法错误的是（ ）",
+  "options": [],
+  "answer": "D",
+  "answer_text": "承兑行不得拒绝付款，即使承兑汇票到期后承兑人无力付款",
+  "his_answer": "D（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "商业票据的特点里有“见票即付”（到期时债务人必须无条件支付，不能以任何理由拒绝或延期），D 的说法与之接近；但平台把它判为错误的说法，疑似选项文字记录不完整或题库另有说法。以平台为准，考试前请对照学习通核对本题。",
+  "incomplete": true
+ },
+ {
+  "id": "ch6-17",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 17,
+  "type": "flash",
+  "stem": "下列关于商业票据的融资特点说法错误的是（ ）",
+  "options": [],
+  "answer": "D",
+  "answer_text": "商业票据融资是一种短期融资方式，具有灵活性强、成本低、风险小的特点",
+  "his_answer": "D（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "商业票据融资的六个特点是无担保、期限短、见票即付、利率低、平价发行、受限制少；D 的“灵活性强、成本低、风险小”不是笔记的六条表述，按平台答案记，记住六条特点。",
+  "incomplete": true
+ },
+ {
+  "id": "ch6-18",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 18,
+  "type": "flash",
+  "stem": "关于无形资产与无形资本的关系，下列说法错误的是（ ）",
+  "options": [],
+  "answer": "C",
+  "answer_text": "无形资本是无形资产的一部分",
+  "his_answer": "C（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "无形资本的范围比无形资产广：广义无形资本还包括商誉、股票、债券、经营权等，C 把包含关系说反了（应该是无形资产是无形资本的一部分）。记住：无形资本＞无形资产。",
+  "incomplete": true
+ },
+ {
+  "id": "ch6-19",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 19,
+  "type": "flash",
+  "stem": "下列关于无形资本的特征说法错误的是（ ）",
+  "options": [],
+  "answer": "D",
+  "answer_text": "无形资本可以多次使用，不会磨损",
+  "his_answer": "D（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "笔记里无形资本的特点有“非耗损性”，D 的说法看起来与之一致；但平台把它判为错误的说法，疑似选项文字记录不完整或题库另有说法。以平台为准，考试前请对照学习通核对本题。记住无形资本的六个特点：无形性、垄断性、收益性、可投资性、整合组合性、非耗损性。",
+  "incomplete": true
+ },
+ {
+  "id": "ch6-20",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 20,
+  "type": "flash",
+  "stem": "【题干待核对：平台第二次查看的题目与第一次不同，题干未完整记录】",
+  "options": [],
+  "answer": "C",
+  "answer_text": "资产证券化的实质就是将缺乏流动性但具有未来现金流收益权的资产，通过发行证券的方式出售给投资者，从而获得融资的过程",
+  "his_answer": "C（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "资产证券化的实质就是把缺乏流动性、但有未来现金流收益权的资产，通过发行证券卖给投资者来融资；和传统融资的区别是：资产证券化靠资产信用融资，传统融资靠主体信用融资。- 注意：本题第一次查看的题干是“以下说法正确的是（国家银行贷款 / 长期贷款）”，与平台答案文字对不上，疑似平台两次查看题序不同；按平台答案记，学概念不要只记字母。",
+  "incomplete": true
+ },
+ {
+  "id": "ch6-21",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 21,
+  "type": "flash",
+  "stem": "【题干待核对：平台第二次查看的题目与第一次不同，题干未完整记录】",
+  "options": [],
+  "answer": "C",
+  "answer_text": "融资租赁的优势是承租人可以获得长期的资金支持",
+  "his_answer": "C（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "融资租赁的优势之一是承租人可以获得长期的资金支持；融资租赁兼有融资与融物的双重功能，可以用较少的资金尽快获得所需设备，租金和折旧可以抵税。- 注意：本题第一次查看的题干是“下列关于债券融资的说法正确的是”，与平台答案文字对不上，疑似平台两次查看题序不同；按平台答案记。",
+  "incomplete": true
+ },
+ {
+  "id": "ch6-22",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 22,
+  "type": "flash",
+  "stem": "【题干待核对：平台第二次查看的题目与第一次不同，题干未完整记录】",
+  "options": [],
+  "answer": "D",
+  "answer_text": "加强租赁担保",
+  "his_answer": "D（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "本题第一次查看的题干是“下列关于直接融资的说法正确的是”，四个选项说的都是企业拿钱买证券（投资行为），与题干对不上，疑似题库录入错误；平台第二次查看的答案是 D（加强租赁担保），与融资租赁有关。记住直接融资的定义就行：企业通过发行股票、债券等有价证券直接向投资者筹集资金。",
+  "incomplete": true
+ },
+ {
+  "id": "ch6-23",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 23,
+  "type": "flash",
+  "stem": "【题干待核对：平台第二次查看的题目与第一次不同，题干未完整记录】",
+  "options": [],
+  "answer": "D",
+  "answer_text": "典当是企业与银行之间的信贷关系",
+  "his_answer": "D（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "【平台答案与课件不一致，以平台为准】按平台答案，D 是正确的说法；但课件里典当融资的概念是“典当行与当户在平等自愿的原则下建立的典当质押贷款关系”，典当行不是银行，当户也不一定是企业。考试前请对照学习通核对本题。- 注意：本题第一次查看的题干是“下列关于间接融资的说法正确的是”，与平台答案文字对不上，疑似平台两次查看题序不同；记住间接融资的定义：企业通过银行等金融机构的媒介筹集资金。",
+  "incomplete": true
+ },
+ {
+  "id": "ch6-24",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 24,
+  "type": "flash",
+  "stem": "【题干待核对：平台第二次查看的题目与第一次不同，题干未完整记录】",
+  "options": [],
+  "answer": "C",
+  "answer_text": "资产证券化是企业通过发行股票、债券等方式筹集资金的过程",
+  "his_answer": "C（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "【平台答案与课件不一致，以平台为准】按平台答案，C 是正确的说法；但课件里资产证券化的概念是“将缺乏流动性但能够产生可预见现金收入的资产，通过结构性重组，转变为可在金融市场上出售和流通的证券，据以融通资金”，不是“通过发行股票、债券等方式筹集资金”。考试前请对照学习通核对本题。- 注意：本题第一次查看的题干是“下列关于融资方式的说法正确的是”，与平台答案文字对不上，疑似平台两次查看题序不同；记住资产证券化的概念和九个步骤。",
+  "incomplete": true
+ },
+ {
+  "id": "ch6-25",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 25,
+  "type": "judge",
+  "stem": "内部融资与外部融资的根本区别在于融资的来源和渠道不同。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "和第 2 题单选一个意思。内源 / 外源融资按资金来源方向分，根本区别就是来源和渠道不同。",
+  "incomplete": false
+ },
+ {
+  "id": "ch6-26",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 26,
+  "type": "judge",
+  "stem": "债券筹资的优点有：资本成本较低，资金使用上无时间限制，杠杆作用较强。",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "错（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "按平台答案，这句话是错的。注意：债券筹资优点在笔记里没有展开成“三条”的表述，平台判这句话为错；第 37 题是同一句话，平台也判错。以平台为准，考试前请对照教材核对。",
+  "incomplete": false
+ },
+ {
+  "id": "ch6-27",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 27,
+  "type": "judge",
+  "stem": "发行债券的缺点是：增加了企业偿还债务的压力。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "和第 4 题单选一个意思，债券到期要还本付息，偿债压力大。",
+  "incomplete": false
+ },
+ {
+  "id": "ch6-28",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 28,
+  "type": "judge",
+  "stem": "直接融资方式的优点是：资金供需双方直接联系，中介费用相对较低。",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "错（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "按平台答案，这句话是错的。直接融资的特点在笔记里是直接性、长期性、流通性、不可逆性，“中介费用相对较低”不在四特点里，平台判这句话为错。以平台为准，考试前请对照教材核对。",
+  "incomplete": false
+ },
+ {
+  "id": "ch6-29",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 29,
+  "type": "judge",
+  "stem": "股票融资的资金成本相对较高。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "股票不用还本但要分红，资金成本相对较高，这是股票融资的主要缺点之一。",
+  "incomplete": false
+ },
+ {
+  "id": "ch6-30",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 30,
+  "type": "judge",
+  "stem": "国际融资的资金成本相对较低。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "国际融资能用到国际金融市场的低息资金，成本相对较低。和第 9 题单选对应。",
+  "incomplete": false
+ },
+ {
+  "id": "ch6-31",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 31,
+  "type": "judge",
+  "stem": "保险公司贷款是指保险公司以其所保的企业资金为抵押而发放的一种贷款。",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "对（✗ 答错）",
+  "was_wrong": true,
+  "analysis": "保险公司贷款分两种：保险单贷款是以企业主**所付保险费**为基础（能借到所缴保费的 95%），抵押贷款是以**价值 50 万美元以上的不动产**作抵押。没有一种是“以其所保的企业资金为抵押”的。- 错因：把保险公司贷款的抵押物记错了。记住：**保险单贷款凭保费，抵押贷款凭不动产**。",
+  "incomplete": false
+ },
+ {
+  "id": "ch6-32",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 32,
+  "type": "judge",
+  "stem": "债券融资的资金成本相对较低。",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "错（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "按平台答案，这句话是错的。债券融资的资金成本在笔记里没有明确写“相对较低”四个字（债券融资一节讲的是偿还性、流动性、安全性、收益性），平台判这句话为错；以平台为准，考试前请对照教材核对。",
+  "incomplete": false
+ },
+ {
+  "id": "ch6-33",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 33,
+  "type": "judge",
+  "stem": "直接融资是指企业通过发行股票、债券等有价证券直接向投资者筹集资金的方式。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "这就是直接融资的定义：发行股票、债券，直接向投资者筹钱，不经过银行。",
+  "incomplete": false
+ },
+ {
+  "id": "ch6-34",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 34,
+  "type": "judge",
+  "stem": "间接融资是指企业通过银行等金融机构的媒介向投资者筹集资金的方式。",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "错（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "按平台答案，这句话是错的。间接融资的定义是：由银行作为中介，把分散的储蓄集中起来，再供应给融资者；这句话说“向投资者筹集资金”——间接融资是向储蓄者 / 资金供给者筹钱，不是向投资者（买股票债券的人）筹钱，方向说错了。以平台为准。",
+  "incomplete": false
+ },
+ {
+  "id": "ch6-35",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 35,
+  "type": "judge",
+  "stem": "发行股票的资金使用没有明确的限制和约束性。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "股票融资的钱拿来没有明确的用途限制，也不用还本，这是股票融资相对债券的优势。",
+  "incomplete": false
+ },
+ {
+  "id": "ch6-36",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 36,
+  "type": "judge",
+  "stem": "发行债券的资金使用有明确的限制和约束性。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "债券募集资金的用途是明确限定的，要符合国家产业政策等。和第 35 题对照记：**股票的钱没限制，债券的钱有限制**。这道题和第 11、13 题单选是同一个考点。",
+  "incomplete": false
+ },
+ {
+  "id": "ch6-37",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 37,
+  "type": "judge",
+  "stem": "债券筹资的优点有：资本成本较低，资金使用上无时间限制，杠杆作用较强。",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "错（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "和第 26 题完全一样，同一句话，平台也判错。按平台答案记，考试前请对照教材核对。",
+  "incomplete": false
+ },
+ {
+  "id": "ch6-38",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 38,
+  "type": "judge",
+  "stem": "无形资本只有使用价值，没有价值。",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "对（✗ 答错）",
+  "was_wrong": true,
+  "analysis": "无形资本既有使用价值也有价值：专利、商标、专有技术、土地使用权都可以评估作价入股、抵押贷款、证券化，能换成钱的东西怎么会没有价值。- 错因：把“没有实物形态”理解成了“没有价值”。记住：**无形≠无价值，无形资本的特点里就有收益性和可投资性**。",
+  "incomplete": false
+ },
+ {
+  "id": "ch6-39",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 39,
+  "type": "judge",
+  "stem": "固定资本与流动资本的主要区别在于固定资本的价值一次转移到新产品中，而流动资本的价值是多次转移到新产品中。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "【存疑】按平台答案，这句话是对的；但第 40 题是和这句话正好相反的表述，平台也判对，两句话不可能都对，疑似题库答案录入错误。概念上记住：固定资本的价值是多次转移到新产品中（分次折旧），流动资本的价值是一次转移到新产品中（一次消耗完）——按概念答，第 40 题的表述才是对的。",
+  "incomplete": false
+ },
+ {
+  "id": "ch6-40",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 40,
+  "type": "judge",
+  "stem": "固定资本与流动资本的主要区别在于固定资本的价值多次转移到新产品中，而流动资本的价值是一次转移到新产品中。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "和第 39 题反过来，这句是对的：固定资本价值多次转移，流动资本价值一次转移。这就是两者最主要的区别。- 注意：第 39 题与本题正好相反，平台却都判对，疑似题库答案录入错误；概念上以本题为准（固定多次、流动一次）。",
+  "incomplete": false
+ },
+ {
+  "id": "ch6-41",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 41,
+  "type": "judge",
+  "stem": "内部融资是指企业从内部筹集资金的方式，包括留存收益和折旧等。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "内部融资就是企业内部的钱：留存收益、折旧基金、初始投资形成的股本。",
+  "incomplete": false
+ },
+ {
+  "id": "ch6-42",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 42,
+  "type": "judge",
+  "stem": "外部融资是指企业从外部筹集资金的方式，包括发行股票、发行债券、银行贷款等。",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "错（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "【平台答案与课件不一致，以平台为准】按平台答案，这句话是错的；但笔记里外源融资包括发行股票、企业债券和向银行贷款等，这句话的表述与笔记一致。考试前请对照教材核对。",
+  "incomplete": false
+ },
+ {
+  "id": "ch6-43",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 43,
+  "type": "judge",
+  "stem": "内部融资是指企业通过发行股票、债券等有价证券直接向投资者筹集资金的方式。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "【平台答案与课件不一致，以平台为准】按平台答案，这句话是对的；但这句话说的是直接融资的定义（发行股票、债券直接向投资者筹集资金），不是内部融资（内部融资是企业内部筹钱：留存收益、折旧）。考试前请对照学习通核对。",
+  "incomplete": false
+ },
+ {
+  "id": "ch6-44",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 44,
+  "type": "judge",
+  "stem": "外部融资是指企业通过银行等金融机构的媒介向投资者筹集资金的方式。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "【平台答案与课件不一致，以平台为准】按平台答案，这句话是对的；但这句话说的是间接融资的定义（通过银行等金融机构的媒介筹集资金），不是外部融资。考试前请对照学习通核对。",
+  "incomplete": false
+ },
+ {
+  "id": "ch6-45",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 45,
+  "type": "judge",
+  "stem": "内部融资的优点是：资金成本低、风险小、控制权不分散。",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "错（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "【存疑】按平台答案，这句话是错的；但第 47 题是和这句话完全一样的表述，平台判对，两处答案自相矛盾，疑似题库答案录入错误。概念上内部融资的优点确实是资金成本低、风险小、控制权不分散（内源四特点：自主性、有限性、低成本性、低风险性），按概念记。",
+  "incomplete": false
+ },
+ {
+  "id": "ch6-46",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 46,
+  "type": "judge",
+  "stem": "外部融资的优点是：资金成本高、风险大、控制权分散。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "【存疑】按平台答案，这句话是对的；但概念上资金成本高、风险大、控制权分散是外部融资的缺点，不是优点——第 45 题（内部融资的优点是成本低、风险小、控制权不分散）平台判错，这道题平台判对，两处答案与概念的对应关系是反的，疑似题库答案录入错误。概念上记住：成本低、风险小、控制权不分散是内部融资的优点；成本高、风险大、控制权分散是外部融资的缺点。",
+  "incomplete": false
+ },
+ {
+  "id": "ch6-47",
+  "chapter": 6,
+  "chapter_name": "融资方式",
+  "num": 47,
+  "type": "judge",
+  "stem": "内部融资的优点是：资金成本低、风险小、控制权不分散。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "和第 45 题完全一样，内部融资的优点就是这三条。- 注意：这道题在作业详情里显示答对，却被列进了错题集，是平台记录对不上的 5 道题之一，以作业详情为准。---",
+  "incomplete": false
+ },
+ {
+  "id": "ch8-1",
+  "chapter": 8,
+  "chapter_name": "投资项目管理",
+  "num": 1,
+  "type": "flash",
+  "stem": "项目管理是落实（ ）的基本形式和方法",
+  "options": [],
+  "answer": "C",
+  "answer_text": "一次性投资活动",
+  "his_answer": "C（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "投资活动按支出时间特点分连续性、间断性、一次性三类；项目管理就是落实一次性投资活动的基本形式和方法。三类投资可以互相转化。",
+  "incomplete": true
+ },
+ {
+  "id": "ch8-2",
+  "chapter": 8,
+  "chapter_name": "投资项目管理",
+  "num": 2,
+  "type": "flash",
+  "stem": "具备一定条件的一次性投资活动应作为项目来管理，下列不属于这些条件的是：（ ）",
+  "options": [],
+  "answer": "A",
+  "answer_text": "小规模的投资活动",
+  "his_answer": "A（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "只有达到一定规模、投入和复杂程度的一次性投资活动才作为项目管理；小规模的活动不需要项目管理，所以 A 不属于这些条件。笔记里没展开具体条件，以平台为准。",
+  "incomplete": true
+ },
+ {
+  "id": "ch8-3",
+  "chapter": 8,
+  "chapter_name": "投资项目管理",
+  "num": 3,
+  "type": "flash",
+  "stem": "项目目标一般应符合如下条件，其中错误的是：（ ）",
+  "options": [],
+  "answer": "D",
+  "answer_text": "目标必须要有一定的难度",
+  "his_answer": "A（✗ 答错）",
+  "was_wrong": true,
+  "analysis": "项目目标一般要求明确、可度量、有时限、切实可行；“必须要有难度”不是教材列的条件。- 错因：把“目标要有挑战性”这个常识当成了教材条件；考试按教材的条件记，笔记里没展开这条，以平台为准。",
+  "incomplete": true
+ },
+ {
+  "id": "ch8-4",
+  "chapter": 8,
+  "chapter_name": "投资项目管理",
+  "num": 4,
+  "type": "flash",
+  "stem": "投资项目按投资主体和项目性质不同划分为下列几种，其中不包括：（ ）",
+  "options": [],
+  "answer": "C",
+  "answer_text": "固定资产投资项目",
+  "his_answer": "C（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "按投资主体和项目性质分四类：民间经济项目、公共（益）项目、社会福利项目、混合性项目；没有“固定资产投资项目”这一类（那是按投资对象分的）。",
+  "incomplete": true
+ },
+ {
+  "id": "ch8-5",
+  "chapter": 8,
+  "chapter_name": "投资项目管理",
+  "num": 5,
+  "type": "flash",
+  "stem": "属于收购与兼并投资项目和金融策划投资项目共同的特点的是：（ ）",
+  "options": [],
+  "answer": "B",
+  "answer_text": "投资运作管理难度大",
+  "his_answer": "B（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "收购兼并和金融策划都涉及产权、资本运作，专业性强、环节多，投资运作管理难度大是它们的共同特点。笔记里没展开这条，以平台为准。",
+  "incomplete": true
+ },
+ {
+  "id": "ch8-6",
+  "chapter": 8,
+  "chapter_name": "投资项目管理",
+  "num": 6,
+  "type": "flash",
+  "stem": "周期性特征对项目管理具有多种意义，具体体现在以下几个方面，其中不是的是：（ ）",
+  "options": [],
+  "answer": "D",
+  "answer_text": "项目周期呈现出一定的规律性，即从项目开始到项目结束，项目周期呈现出从大到小、从长到短的规律性",
+  "his_answer": "A（✗ 答错）",
+  "was_wrong": true,
+  "analysis": "项目周期呈现出的是阶段性特征（各阶段工作内容、形式、投入产出要素不同，管理也要跟着变），不是“从大到小、从长到短”的规律性；D 把阶段性偷换成了大小长短的变化。- 错因：没分清“阶段性”和“规律性”这两个词，记住：周期性→阶段性。",
+  "incomplete": true
+ },
+ {
+  "id": "ch8-7",
+  "chapter": 8,
+  "chapter_name": "投资项目管理",
+  "num": 7,
+  "type": "flash",
+  "stem": "从资金运动的角度分析，投资建设的全过程按其活动的目的和内容不同，可划分为性质不同的若干项工作，其中不是投资工作的是：（ ）",
+  "options": [],
+  "answer": "C",
+  "answer_text": "初步设计、最终设计",
+  "his_answer": "D（✗ 答错）",
+  "was_wrong": true,
+  "analysis": "从资金运动角度，投资建设全过程按活动目的和内容划分的工作是决策立项、规划设计、实施施工等；初步设计、最终设计是规划设计阶段里的设计环节，不是按这个口径分的投资工作。笔记里没展开这条，以平台为准。- 错因：把设计环节和投资工作混在一起了；记住全过程的划分看的是活动的性质（分析论证、设计、实施）。",
+  "incomplete": true
+ },
+ {
+  "id": "ch8-8",
+  "chapter": 8,
+  "chapter_name": "投资项目管理",
+  "num": 8,
+  "type": "flash",
+  "stem": "投资建设项目全过程中属于分析论证性质的工作是：（ ）",
+  "options": [],
+  "answer": "A",
+  "answer_text": "决策立项",
+  "his_answer": "A（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "决策立项阶段做的是投资机会分析、初步可行性研究、可行性研究，都属于分析论证性质；规划设计是设计性质，施工建设是实施性质。",
+  "incomplete": true
+ },
+ {
+  "id": "ch8-9",
+  "chapter": 8,
+  "chapter_name": "投资项目管理",
+  "num": 9,
+  "type": "flash",
+  "stem": "下列错误的是：（ ）",
+  "options": [],
+  "answer": "B",
+  "answer_text": "实施施工建设性质的工作是投资建设项目周期的第二个阶段，其任务是把设计图纸变为实物",
+  "his_answer": "B（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "投资建设项目周期分决策立项、规划设计、施工建设三个阶段，施工是第三阶段不是第二阶段；它的任务确实是把设计图纸变为实物，后半句对、前半句错，整句就是错的。",
+  "incomplete": true
+ },
+ {
+  "id": "ch8-10",
+  "chapter": 8,
+  "chapter_name": "投资项目管理",
+  "num": 10,
+  "type": "flash",
+  "stem": "下列属于投建设项目全过程中的各阶段或工作间联系的是：（ ）",
+  "options": [],
+  "answer": "B",
+  "answer_text": "各阶段任务的性质和特点有较大的区别，但互相补充",
+  "his_answer": "B（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "各阶段任务性质和特点区别大，但互相补充、互相联系，项目周期是若干项目阶段的有机整体，管理必须是全过程优化。",
+  "incomplete": true
+ },
+ {
+  "id": "ch8-11",
+  "chapter": 8,
+  "chapter_name": "投资项目管理",
+  "num": 11,
+  "type": "flash",
+  "stem": "项目投资影响的四因素模式把投资建设项目投资管理分为四种类型，其中不属于其中四种类型的是：（ ）",
+  "options": [],
+  "answer": "C",
+  "answer_text": "是通过对项目各阶段工作质量的管理而达到工作总投资费用的目的",
+  "his_answer": "C（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "四因素模式是工作费用、要素费用、产出对总投资的影响、产出对项目使用功能的影响；C 说的是管理要达到的目的，不是四种类型之一。",
+  "incomplete": true
+ },
+ {
+  "id": "ch8-12",
+  "chapter": 8,
+  "chapter_name": "投资项目管理",
+  "num": 12,
+  "type": "flash",
+  "stem": "产出对总投资的影响在投资建设项目决策阶段、规划设计阶段、施工阶段产生的影响幅度分别是：（ ）",
+  "options": [],
+  "answer": "B",
+  "answer_text": "60%~70%、20%~30%、10%~15%",
+  "his_answer": "B（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "记住这组数：决策阶段 60%–70%，规划设计 20%–30%，施工 10%–15%；结论是决策与规划设计阶段的工作质量对项目投资有重要影响，越往后影响越小。",
+  "incomplete": true
+ },
+ {
+  "id": "ch8-13",
+  "chapter": 8,
+  "chapter_name": "投资项目管理",
+  "num": 13,
+  "type": "flash",
+  "stem": "项目决策阶段管理模式中投资控制要素的目标是：（ ）",
+  "options": [],
+  "answer": "A",
+  "answer_text": "高水平决策质量和适度的决策费用",
+  "his_answer": "A（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "决策阶段要的是高水平决策质量，同时费用适度——只盯着决策费用最小可能出现重大错误（楼歪歪、楼脆脆就是例子），但也不能不计成本。",
+  "incomplete": true
+ },
+ {
+  "id": "ch8-14",
+  "chapter": 8,
+  "chapter_name": "投资项目管理",
+  "num": 14,
+  "type": "flash",
+  "stem": "下列不属于投资项目决策的质量的是：（ ）",
+  "options": [],
+  "answer": "D",
+  "answer_text": "投资内容具有开拓创新性质",
+  "his_answer": "D（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "投资项目决策的质量体现在决策工作的创造性、智力化和综合性上；“投资内容具有开拓创新性质”说的是投资内容，不是决策质量。笔记里没展开这条，以平台为准。",
+  "incomplete": true
+ },
+ {
+  "id": "ch8-15",
+  "chapter": 8,
+  "chapter_name": "投资项目管理",
+  "num": 15,
+  "type": "flash",
+  "stem": "项目投资机会包括以下几个方面，其中不是的是：（ ）",
+  "options": [],
+  "answer": "B",
+  "answer_text": "政策分析",
+  "his_answer": "B（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "识别投资机会从三个方面入手：客观环境分析、企业经营目标和战略分析、企业内外资源条件分析；政策分析是客观环境分析里的具体内容，不是并列的方面。",
+  "incomplete": true
+ },
+ {
+  "id": "ch8-16",
+  "chapter": 8,
+  "chapter_name": "投资项目管理",
+  "num": 16,
+  "type": "flash",
+  "stem": "市场竞争战略主要包括：（ ）",
+  "options": [],
+  "answer": "D",
+  "answer_text": "市场挑战战略、市场领先战略、地域扩展战略、市场渗透战略",
+  "his_answer": "D（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "市场竞争战略四种：市场领先、地域扩展、市场渗透、市场挑战；风险回避战略和收缩战略是另外两类企业战略，别串了。",
+  "incomplete": true
+ },
+ {
+  "id": "ch8-17",
+  "chapter": 8,
+  "chapter_name": "投资项目管理",
+  "num": 17,
+  "type": "flash",
+  "stem": "下列是多项目比选论证的指标体系组成部分的是：（ ）",
+  "options": [],
+  "answer": "A",
+  "answer_text": "营利性指标、风险性指标、项目的企业适应性、项目的社会适应性",
+  "his_answer": "A（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "多项目比选论证的指标体系分四个方面（P210）：营利性、风险性、企业适应性、社会适应性，记住这四项。### 第八章·判断题（第 18–29 题）",
+  "incomplete": true
+ },
+ {
+  "id": "ch8-18",
+  "chapter": 8,
+  "chapter_name": "投资项目管理",
+  "num": 18,
+  "type": "judge",
+  "stem": "项目管理是落实一次性投资活动的基本形式和方法，所以一次性的投资活动一定要用项目管理的方法来管理。",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "对（✗ 答错）",
+  "was_wrong": true,
+  "analysis": "只有具备一定条件的一次性投资活动才作为项目管理（第 2 题就是这个点），不是所有一次性活动都必须用项目管理方法；前半句对、后半句错，整句就是错的。- 错因：把“基本形式和方法”理解成了“一定要用”，记住：具备条件才用项目管理。",
+  "incomplete": false
+ },
+ {
+  "id": "ch8-19",
+  "chapter": 8,
+  "chapter_name": "投资项目管理",
+  "num": 19,
+  "type": "judge",
+  "stem": "投资项目的特征包括一次性、目标性、周期性、限定性、投资过程周期长、投入大、风险较大。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "项目特征就是这几项：一次性、目标性、周期性、限定性、投资过程周期长、投入大、风险较大；附录里拍到了后三项（周期性、限定性、周期长投入大风险大）。",
+  "incomplete": false
+ },
+ {
+  "id": "ch8-20",
+  "chapter": 8,
+  "chapter_name": "投资项目管理",
+  "num": 20,
+  "type": "judge",
+  "stem": "投资项目的目标性区别于常规性投资活动的根本方面。",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "错（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "区别于常规性投资活动的根本方面是一次性（项目是一次性的活动，常规投资活动是连续性的），不是目标性；目标性很多投资活动都有。",
+  "incomplete": false
+ },
+ {
+  "id": "ch8-21",
+  "chapter": 8,
+  "chapter_name": "投资项目管理",
+  "num": 21,
+  "type": "judge",
+  "stem": "投资项目在本质上是整体化的系统，这决定了项目管理的首要工作是认识、鉴别、界定投资项目这个独特的系统，包括其范围、内容、目标、限定条件等。",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "对（✗ 答错）",
+  "was_wrong": true,
+  "analysis": "按平台答案，这句话是错的；笔记里没展开“项目管理首要工作”这条，以平台为准，考试前请对照教材核对。- 错因：这句话看起来很有道理，但平台判错，说明教材对“首要工作”另有说法，别凭语感判断。",
+  "incomplete": false
+ },
+ {
+  "id": "ch8-22",
+  "chapter": 8,
+  "chapter_name": "投资项目管理",
+  "num": 22,
+  "type": "judge",
+  "stem": "投资项目目标性就是指形成具有合理功能的投资成果。",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "对（✗ 答错）",
+  "was_wrong": true,
+  "analysis": "按平台答案，这句话是错的；笔记里没展开目标性的定义，以平台为准。目标性不只是“形成具有合理功能的投资成果”这一句，考试前请对照教材核对。- 错因：定义题最容易在这种“看起来对”的句子上丢分，定义要按教材原话记。",
+  "incomplete": false
+ },
+ {
+  "id": "ch8-23",
+  "chapter": 8,
+  "chapter_name": "投资项目管理",
+  "num": 23,
+  "type": "judge",
+  "stem": "我国对投资项目的分类一般是按投资规模、投资组织形式、投资行业性质来划分的。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "按平台答案是对的；注意和附录里的另一种分法区分开：按投资主体和项目性质分民间、公共、社会福利、混合——两种分法都存在，别串了。",
+  "incomplete": false
+ },
+ {
+  "id": "ch8-24",
+  "chapter": 8,
+  "chapter_name": "投资项目管理",
+  "num": 24,
+  "type": "judge",
+  "stem": "固定资产投资项目与房地产投资项目都是对厂房等建筑物进行投资，所以其本质是一样的。",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "错（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "固定资产投资项目是对厂房、设备等生产性资产的投资，房地产投资项目是对房地产的开发经营，两者投资对象、目的、运作方式都不同，本质不一样；“都投建筑物”不等于本质一样。",
+  "incomplete": false
+ },
+ {
+  "id": "ch8-25",
+  "chapter": 8,
+  "chapter_name": "投资项目管理",
+  "num": 25,
+  "type": "judge",
+  "stem": "投资项目管理的对象就是投资项目周期全过程。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "项目管理的对象就是投资项目周期全过程，管理必须是全过程优化，而不是阶段性优化。",
+  "incomplete": false
+ },
+ {
+  "id": "ch8-26",
+  "chapter": 8,
+  "chapter_name": "投资项目管理",
+  "num": 26,
+  "type": "judge",
+  "stem": "项目周期的性质明确了项目管理的界限。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "项目周期有明确的起止和阶段划分，它的性质决定了项目管理管到哪里为止、管哪些阶段。",
+  "incomplete": false
+ },
+ {
+  "id": "ch8-27",
+  "chapter": 8,
+  "chapter_name": "投资项目管理",
+  "num": 27,
+  "type": "judge",
+  "stem": "投产运营和投资回报，是一般工业企业管理的范畴，不属于建设投资考察的范围。所以在投资建设项目周期中可以不用进行。",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "错（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "投产运营和投资回报是项目周期的最后阶段，属于建设投资考察的范围，不能不进行；前半句把投产运营划出去就是错的。",
+  "incomplete": false
+ },
+ {
+  "id": "ch8-28",
+  "chapter": 8,
+  "chapter_name": "投资项目管理",
+  "num": 28,
+  "type": "judge",
+  "stem": "项目要素费用在投资建设项目决策阶段、规划设计阶段、施工阶段产生的影响幅度是不断上升的。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "错（✗ 答错）",
+  "was_wrong": true,
+  "analysis": "要素费用对投资的影响：决策阶段 0，规划设计 10%–20%，施工 50%–60%，确实是不断上升的；和产出影响（决策 60%–70% 最高、越往后越小）正好相反，别记反了。- 错因：把要素费用和产出影响两组数记反了；记住：要素费用越往后越大，产出影响越往后越小。",
+  "incomplete": false
+ },
+ {
+  "id": "ch8-29",
+  "chapter": 8,
+  "chapter_name": "投资项目管理",
+  "num": 29,
+  "type": "judge",
+  "stem": "投资项目决策阶段是项目周期中最重要的阶段，其工作质量对总投资影响高达70%左右，对投资效益影响高达80%左右。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "决策阶段是项目周期中最重要的阶段；产出对总投资的影响在决策阶段是 60%–70%，对项目使用功能的影响是 70%–80%，和题干的“70% 左右、80% 左右”对得上。---",
+  "incomplete": false
+ },
+ {
+  "id": "ch9-1",
+  "chapter": 9,
+  "chapter_name": "产权投资",
+  "num": 1,
+  "type": "single",
+  "stem": "下列不属于产权形态的是：（ ）",
+  "options": [
+   {
+    "key": "A",
+    "text": "实物形态"
+   },
+   {
+    "key": "B",
+    "text": "股权形态"
+   },
+   {
+    "key": "C",
+    "text": "基金形式"
+   },
+   {
+    "key": "D",
+    "text": "债权形态"
+   }
+  ],
+  "answer": "C",
+  "answer_text": "基金形式",
+  "his_answer": "C（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "产权的多样性表现为三种形态：实物形态（对资产直接的实物占有）、股权形态（通过股权占有）、债权形态（对资产形成的债权占有）。没有“基金形式”这一说。",
+  "incomplete": false
+ },
+ {
+  "id": "ch9-2",
+  "chapter": 9,
+  "chapter_name": "产权投资",
+  "num": 2,
+  "type": "single",
+  "stem": "下列说法错误的是：（ ）",
+  "options": [
+   {
+    "key": "A",
+    "text": "企业并购决策是企业在整个并购过程中，在关于并购对象的选择、并购对象价格、并购方式等多个方案中选择一个较佳方案的过程"
+   },
+   {
+    "key": "B",
+    "text": "企业外部环境分析，包括对政治、经济、社会、文化等因素的分析，对企业并购有较大影响的有国家的经济政策、法律以及重大的机会分析"
+   },
+   {
+    "key": "C",
+    "text": "企业并购的目的是要使目标企业的资产在并购完成后，得到合理有效的运用，与并购企业产生协同效益，服务于本企业的发展战略"
+   },
+   {
+    "key": "D",
+    "text": "无论怎么评估，用什么方法评估都改变不了企业并购的交易价格"
+   }
+  ],
+  "answer": "D",
+  "answer_text": "无论怎么评估，用什么方法评估都改变不了企业并购的交易价格",
+  "his_answer": "D（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "评估方法和评估结果直接决定交易价格，不同方法算出来的价格不一样，D 说“怎么评估都改变不了价格”是错的。A、B、C 都是对的：并购决策就是在多个方案里选较佳的；外部环境分析要看经济政策、法律和重大机会；并购的目的是让目标企业资产合理运用、产生协同效益。",
+  "incomplete": false
+ },
+ {
+  "id": "ch9-3",
+  "chapter": 9,
+  "chapter_name": "产权投资",
+  "num": 3,
+  "type": "single",
+  "stem": "下列不是选取可比公司的标准的有：（ ）",
+  "options": [
+   {
+    "key": "A",
+    "text": "公司是否上市"
+   },
+   {
+    "key": "B",
+    "text": "公司规模"
+   },
+   {
+    "key": "C",
+    "text": "增长性和利润率"
+   },
+   {
+    "key": "D",
+    "text": "资产使用效率和风险特征"
+   }
+  ],
+  "answer": "A",
+  "answer_text": "公司是否上市",
+  "his_answer": "A（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "选取可比公司的标准是公司规模、增长性和利润率、资产使用效率和风险特征。公司是否上市不是选取标准。",
+  "incomplete": false
+ },
+ {
+  "id": "ch9-4",
+  "chapter": 9,
+  "chapter_name": "产权投资",
+  "num": 4,
+  "type": "single",
+  "stem": "签订并购协议不需要以下哪个部门的审批：（ ）",
+  "options": [
+   {
+    "key": "A",
+    "text": "国有资产管理局"
+   },
+   {
+    "key": "B",
+    "text": "经济贸易委员会"
+   },
+   {
+    "key": "C",
+    "text": "工商管理局"
+   },
+   {
+    "key": "D",
+    "text": "税务部门"
+   }
+  ],
+  "answer": "B",
+  "answer_text": "经济贸易委员会",
+  "his_answer": "D（✗ 答错）",
+  "was_wrong": true,
+  "analysis": "按平台答案，签订并购协议不需要经济贸易委员会的审批；需要的是国有资产管理局、工商管理局、税务部门等。笔记里没展开并购协议审批部门，以平台为准。- 错因：把“管审批的部门”和“不管审批的部门”记反了；记住：不需要的是经济贸易委员会。",
+  "incomplete": false
+ },
+ {
+  "id": "ch9-5",
+  "chapter": 9,
+  "chapter_name": "产权投资",
+  "num": 5,
+  "type": "judge",
+  "stem": "劳动力、生产资料、技术和信息是间接投资的投资要素。",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "错（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "劳动力、生产资料、技术和信息是**直接投资**的投资要素（直接投入生产过程的东西）；间接投资的要素是资金（货币资本），买的是股票债券。",
+  "incomplete": false
+ },
+ {
+  "id": "ch9-6",
+  "chapter": 9,
+  "chapter_name": "产权投资",
+  "num": 6,
+  "type": "judge",
+  "stem": "参股的比例达不到一定的比例时，不会改变所投资企业的法人地位。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "参股比例小，只是参股，不改变被投资企业的法人地位；只有控股到一定程度才会改变。- 注意：这道题在作业详情里显示答对，却被列进了错题集，是平台记录对不上的 5 道题之一，以作业详情为准。---",
+  "incomplete": false
+ },
+ {
+  "id": "ch10-1",
+  "chapter": 10,
+  "chapter_name": "企业投资战略",
+  "num": 1,
+  "type": "flash",
+  "stem": "资本运行的起点是：（ ）",
+  "options": [],
+  "answer": "A",
+  "answer_text": "筹集资本",
+  "his_answer": "A（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "资本运行过程是企业目标→资本筹措→战略投资→以资产为基础 / 资产重组→资本回收→资本分配，起点就是资本筹措（筹集资本）。",
+  "incomplete": true
+ },
+ {
+  "id": "ch10-2",
+  "chapter": 10,
+  "chapter_name": "企业投资战略",
+  "num": 2,
+  "type": "flash",
+  "stem": "（ ）是企业资本增值的基础.",
+  "options": [],
+  "answer": "A",
+  "answer_text": "以资产为基础的生产经营活动",
+  "his_answer": "A（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "资本筹措、战略投资和以资产为基础的增值活动是资本运行过程的三个主要环节；以资产为基础的生产经营活动是企业资本增值的基础。",
+  "incomplete": true
+ },
+ {
+  "id": "ch10-3",
+  "chapter": 10,
+  "chapter_name": "企业投资战略",
+  "num": 3,
+  "type": "flash",
+  "stem": "下列说法正确的是：（ ）",
+  "options": [],
+  "answer": "C",
+  "answer_text": "资产的运动和增值过程包括生产经营活动和资产重组活动",
+  "his_answer": "C（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "资产的运动和增值过程就是生产经营活动和资产重组活动这两块，记住这个划分。",
+  "incomplete": true
+ },
+ {
+  "id": "ch10-4",
+  "chapter": 10,
+  "chapter_name": "企业投资战略",
+  "num": 4,
+  "type": "flash",
+  "stem": "下列关于企业投资战略的说法不正确的是：（ ）",
+  "options": [],
+  "answer": "B",
+  "answer_text": "企业战略需要回答的根本问题是企业该如何在现有的资本上获取最大的收益。",
+  "his_answer": "B（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "企业战略回答的是企业整体经营的方向、原则、方针（总体战略），不是“如何在现有资本上获取最大收益”这么窄的说法；投资战略的目标是企业价值最大化，不是只看现有资本的收益。按平台答案记。",
+  "incomplete": true
+ },
+ {
+  "id": "ch10-5",
+  "chapter": 10,
+  "chapter_name": "企业投资战略",
+  "num": 5,
+  "type": "flash",
+  "stem": "事业层战略需要回答的基本问题不包括：（ ）",
+  "options": [],
+  "answer": "A",
+  "answer_text": "是否应该兼并另一企业或与其他企业进行联合投资",
+  "his_answer": "A（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "事业层战略的核心问题是如何通过确定顾客需求、竞争者产品以及本企业产品三者之间的关系，奠定并维持本企业产品在市场上的地位；是否兼并另一企业或联合投资属于总体战略层面的问题，不是事业层战略要回答的。",
+  "incomplete": true
+ },
+ {
+  "id": "ch10-6",
+  "chapter": 10,
+  "chapter_name": "企业投资战略",
+  "num": 6,
+  "type": "flash",
+  "stem": "下列不属于投资战略内容的为：（ ）",
+  "options": [],
+  "answer": "B",
+  "answer_text": "投入资金的多少",
+  "his_answer": "D（✗ 答错）",
+  "was_wrong": true,
+  "analysis": "投资战略的内容是战略目标、战略类型、产业目标、产品目标、技术目标、市场目标等方向性内容；投入资金的多少是具体数量安排，不是战略内容。- 错因：把战略层面的“投什么、怎么投”和操作层面的“投多少钱”混在一起了；记住：战略内容是方向和目标，不是金额。",
+  "incomplete": true
+ },
+ {
+  "id": "ch10-7",
+  "chapter": 10,
+  "chapter_name": "企业投资战略",
+  "num": 7,
+  "type": "flash",
+  "stem": "下列关于投资战略的叙述不正确的是：（ ）",
+  "options": [],
+  "answer": "B",
+  "answer_text": "当企业处于上升时期时，无论外面的经济情况如何，同心多样化投资战略都是一种很有生机的战略，而且风险很低",
+  "his_answer": "B（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "同心多样化虽然利用现有知识、技术、设备和销售渠道，但“无论外面经济情况如何都很有生机、风险很低”说得太绝对了；战略选择要看外部环境，上升时期也不例外。",
+  "incomplete": true
+ },
+ {
+  "id": "ch10-8",
+  "chapter": 10,
+  "chapter_name": "企业投资战略",
+  "num": 8,
+  "type": "flash",
+  "stem": "紧缩型投资战略的类型有：(D) ａ．顺序组合战略 ｂ．抽资战略 ｃ．清算战略 ｄ．同时组合战略 ｅ．放弃战略",
+  "options": [],
+  "answer": "D",
+  "answer_text": "ｂｃｅ（抽资战略、清算战略、放弃战略）",
+  "his_answer": "D（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "紧缩型三种：抽资战略、放弃战略、清算战略；顺序组合和同时组合是组合型的两种，不是紧缩型的。记住：紧缩 = 抽资、放弃、清算；组合 = 同时组合、顺序组合。",
+  "incomplete": true
+ },
+ {
+  "id": "ch10-9",
+  "chapter": 10,
+  "chapter_name": "企业投资战略",
+  "num": 9,
+  "type": "flash",
+  "stem": "当企业的经营状况不能适应外部环境的变化，威胁到企业的发展的时候，最适合采用的投资战略是：（ ）",
+  "options": [],
+  "answer": "D",
+  "answer_text": "抽资战略",
+  "his_answer": "D（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "经营状况不适应外部环境、威胁发展时用紧缩型；其中抽资战略是减少某一领域投资、削减费用支出、改善现金流量并投入新领域，是最先采用的紧缩措施（放弃是卖掉一个部门，清算是结束全部经营业务，都是更重的手段）。",
+  "incomplete": true
+ },
+ {
+  "id": "ch10-10",
+  "chapter": 10,
+  "chapter_name": "企业投资战略",
+  "num": 10,
+  "type": "flash",
+  "stem": "维持市场份额是产品生命周期哪一时期的成功因素：（ ）",
+  "options": [],
+  "answer": "C",
+  "answer_text": "成熟期",
+  "his_answer": "C（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "产品生命周期里，成熟期的成功因素就是维持市场份额；成长期是扩大份额，衰退期是收缩退出。",
+  "incomplete": true
+ },
+ {
+  "id": "ch10-11",
+  "chapter": 10,
+  "chapter_name": "企业投资战略",
+  "num": 11,
+  "type": "flash",
+  "stem": "下列说法组合正确的是( D)",
+  "options": [],
+  "answer": "D",
+  "answer_text": "abcd",
+  "his_answer": "D（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "本题四个说法组合都正确，但四个说法的具体文字未完整记录，以平台为准；相关概念见笔记（企业战略三个层次、投资战略类型、核心能力、BCG 矩阵）。",
+  "incomplete": true
+ },
+ {
+  "id": "ch10-12",
+  "chapter": 10,
+  "chapter_name": "企业投资战略",
+  "num": 12,
+  "type": "flash",
+  "stem": "下列说法错误的是：（ ）",
+  "options": [],
+  "answer": "D",
+  "answer_text": "成长期产业的特点是厂商数量开始增加，经营利润迅速提高，亏损的风险小，破产率和兼并率也甚高",
+  "his_answer": "D（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "成长期厂商数量增加、经营利润迅速提高是对的，但“亏损风险小”和“破产率甚高”自相矛盾——成长期破产率并不高；D 前后矛盾，是错的。",
+  "incomplete": true
+ },
+ {
+  "id": "ch10-13",
+  "chapter": 10,
+  "chapter_name": "企业投资战略",
+  "num": 13,
+  "type": "flash",
+  "stem": "关于企业内部分析的说法错误的是（ ）",
+  "options": [],
+  "answer": "B",
+  "answer_text": "有些企业之所以无法发展好，就是缺少核心能力，就像大树没有树根就没有营养",
+  "his_answer": "A（✗ 答错）",
+  "was_wrong": true,
+  "analysis": "这句话看起来是对的（核心能力确实是企业发展的根基，附录里也讲了核心能力的四个特性）；但平台把它判为错误说法，疑似选项文字记录不完整或题库另有说法。以平台为准，考试前请对照学习通核对本题。- 错因：这句话的比喻本身没错，错可能错在“有些企业之所以无法发展好，就是缺少核心能力”这个绝对化的因果上——企业发展不好原因很多，不只是缺少核心能力。",
+  "incomplete": true
+ },
+ {
+  "id": "ch10-14",
+  "chapter": 10,
+  "chapter_name": "企业投资战略",
+  "num": 14,
+  "type": "flash",
+  "stem": "投资战略态势的分析采用的工具不包括（ ）",
+  "options": [],
+  "answer": "A",
+  "answer_text": "比较优势",
+  "his_answer": "A（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "投资战略态势分析用的工具是 SWOT、BCG 矩阵等；比较优势是国际贸易理论的概念，不是战略态势分析工具。按平台答案记。",
+  "incomplete": true
+ },
+ {
+  "id": "ch10-15",
+  "chapter": 10,
+  "chapter_name": "企业投资战略",
+  "num": 15,
+  "type": "flash",
+  "stem": "在波士顿矩阵中，根据业务增长率和竞争地位把企业各业务单位分为4类，其中市场成长率低，相对竞争率高的象限属于：（ ）",
+  "options": [],
+  "answer": "C",
+  "answer_text": "金牛类",
+  "his_answer": "C（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "BCG 四类：明星（高成长高份额）、问题（高成长低份额）、金牛（低成长高份额）、瘦狗（低成长低份额）；市场成长率低、相对份额高就是金牛类，策略是收割利润。### 第十章·判断题（第 16–24 题）",
+  "incomplete": true
+ },
+ {
+  "id": "ch10-16",
+  "chapter": 10,
+  "chapter_name": "企业投资战略",
+  "num": 16,
+  "type": "judge",
+  "stem": "投资是把资本转变为资产的过程，其正确与否直接关系到投资的最终结果",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "投资就是把资本（钱）转变为资产（厂房、设备、股权等）的过程，投得对不对直接决定最终结果。",
+  "incomplete": false
+ },
+ {
+  "id": "ch10-17",
+  "chapter": 10,
+  "chapter_name": "企业投资战略",
+  "num": 17,
+  "type": "judge",
+  "stem": "企业的金融投资是一种短期投资，为了提高资产的流动性，实业投资和产权投资才是企业的战略投资",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "对（✗ 答错）",
+  "was_wrong": true,
+  "analysis": "金融投资不一定是短期投资（也可以长期持有），而且“只有实业投资和产权投资才是战略投资”说得太绝对；金融投资也可以是战略性的。- 错因：把“金融投资 = 短期、非战略”这个绝对化的说法当成了对的；记住：投资期限和是不是战略投资是两回事。",
+  "incomplete": false
+ },
+ {
+  "id": "ch10-18",
+  "chapter": 10,
+  "chapter_name": "企业投资战略",
+  "num": 18,
+  "type": "judge",
+  "stem": "企业投资战略不会受到经营单位战略和职能战略的制约和影响。",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "错（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "企业战略三个层次是互相制约的：总体战略制约事业层和职能战略，事业层和职能战略也会反过来影响投资战略，不可能不受制约。",
+  "incomplete": false
+ },
+ {
+  "id": "ch10-19",
+  "chapter": 10,
+  "chapter_name": "企业投资战略",
+  "num": 19,
+  "type": "judge",
+  "stem": "企业的目标是企业价值最大化，而企业投资的目标是投资收益最大化",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "对（✗ 答错）",
+  "was_wrong": true,
+  "analysis": "企业投资战略的目标同样是企业价值最大化，不是投资收益最大化；价值最大化是动态分析、包含风险因素的综合目标。- 错因：把“投资收益最大化”当成了投资的目标；记住：企业目标和投资目标都是价值最大化。",
+  "incomplete": false
+ },
+ {
+  "id": "ch10-20",
+  "chapter": 10,
+  "chapter_name": "企业投资战略",
+  "num": 20,
+  "type": "judge",
+  "stem": "投资者在资本市场上对回报率的要求是与风险程度相对应的，风险越大，要求的回报率越高，进而采用的折现率越大，导致在其他条件既定时企业价值越小。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "风险越大、要求回报率越高、折现率越大，企业未来现金流折现后价值越小，这是价值最大化分析的基本逻辑。",
+  "incomplete": false
+ },
+ {
+  "id": "ch10-21",
+  "chapter": 10,
+  "chapter_name": "企业投资战略",
+  "num": 21,
+  "type": "judge",
+  "stem": "只有优势的企业才能以最高的经济效益和经济的价格提供高质量的产品和服务.",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "核心能力的异质性决定企业的效率差异与收益差别，只有具备优势（核心能力）的企业才能以最高的经济效益和最经济的价格提供高质量产品服务，按平台答案记。",
+  "incomplete": false
+ },
+ {
+  "id": "ch10-22",
+  "chapter": 10,
+  "chapter_name": "企业投资战略",
+  "num": 22,
+  "type": "judge",
+  "stem": "纵向一体化将原先由多个单一化经营的企业的业务组合到一个企业内部进行，虽然可以节约交易成本和费用，又便于企业最优化地利用资源，但经营风险却因此提高。",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "对（✗ 答错）",
+  "was_wrong": true,
+  "analysis": "纵向一体化确实能节约交易成本、优化资源利用，但“经营风险因此提高”不对——一体化可以分散和控制风险，不必然提高风险。- 错因：前半句对、后半句错，整句就是错的；记住：一体化≠风险提高。",
+  "incomplete": false
+ },
+ {
+  "id": "ch10-23",
+  "chapter": 10,
+  "chapter_name": "企业投资战略",
+  "num": 23,
+  "type": "judge",
+  "stem": "时间限制了可供选择的投资决策方案的数量，但限制不了在评价方案时所能收集的信息量。",
+  "options": [],
+  "answer": "错",
+  "answer_text": "错",
+  "his_answer": "错（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "时间既限制可供选择的方案数量，也限制评价时能收集的信息量；时间越紧，能收集的信息越少，后半句是错的。",
+  "incomplete": false
+ },
+ {
+  "id": "ch10-24",
+  "chapter": 10,
+  "chapter_name": "企业投资战略",
+  "num": 24,
+  "type": "judge",
+  "stem": "波士顿矩阵中的狗类型的业务单位市场成长率和相对市场份额均较低，管理当局则要采用收缩或淘汰的策略。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "BCG 里狗类就是低成长、低份额，策略是收缩或淘汰；明星类是高成长、高份额，策略是发展、追加投资。---",
+  "incomplete": false
+ },
+ {
+  "id": "ch11-1",
+  "chapter": 11,
+  "chapter_name": "国际投资",
+  "num": 1,
+  "type": "single",
+  "stem": "资本在国际范围内的运动首先表现为（ ）",
+  "options": [
+   {
+    "key": "A",
+    "text": "国际贸易"
+   },
+   {
+    "key": "B",
+    "text": "国际借贷"
+   },
+   {
+    "key": "C",
+    "text": "国际证券投资"
+   },
+   {
+    "key": "D",
+    "text": "国际直接投资"
+   }
+  ],
+  "answer": "A",
+  "answer_text": "国际贸易",
+  "his_answer": "A（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "资本在国际范围内的运动首先表现为商品资本的运动，也就是国际贸易；其次是货币资本的运动（国际借贷、国际证券投资）；再次是生产资本的运动（国际直接投资）。国际直接投资是资本国际运动的最高形式。",
+  "incomplete": false
+ },
+ {
+  "id": "ch11-2",
+  "chapter": 11,
+  "chapter_name": "国际投资",
+  "num": 2,
+  "type": "single",
+  "stem": "一般美国制造公司的最初投资愿意投向发达国家，因为它们对美国的出口贸易限制比较严格，美国对发达国家的投资是为了保住其以前通过出口打开的市场，因此美国人称之为（ ）",
+  "options": [
+   {
+    "key": "A",
+    "text": "“战略性”投资"
+   },
+   {
+    "key": "B",
+    "text": "“防御性”投资"
+   },
+   {
+    "key": "C",
+    "text": "“进攻性”投资"
+   },
+   {
+    "key": "D",
+    "text": "“保守性”投资"
+   }
+  ],
+  "answer": "B",
+  "answer_text": "“防御性”投资",
+  "his_answer": "B（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "为了保住已经打开的市场而进行的投资叫防御性投资；为了抢占新市场、主动进攻的叫进攻性投资。这道题考的是“保住市场”这个关键词。",
+  "incomplete": false
+ },
+ {
+  "id": "ch11-3",
+  "chapter": 11,
+  "chapter_name": "国际投资",
+  "num": 3,
+  "type": "single",
+  "stem": "企业拥有财产权、优越的管理技术、创新的产品及能力等无形资产优势是属于哪一项优势（ ）",
+  "options": [
+   {
+    "key": "A",
+    "text": "专属优势"
+   },
+   {
+    "key": "B",
+    "text": "内部化优势"
+   },
+   {
+    "key": "C",
+    "text": "区位优势"
+   },
+   {
+    "key": "D",
+    "text": "整体优势"
+   }
+  ],
+  "answer": "A",
+  "answer_text": "专属优势",
+  "his_answer": "A（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "这是邓宁国际生产折衷理论（OLI）的所有权优势，也叫专属优势：企业拥有的财产权、管理技术、创新产品这些无形资产优势是别人没有的。内部化优势是把交易放在企业内部做的好处，区位优势是东道国 location 的好处。",
+  "incomplete": false
+ },
+ {
+  "id": "ch11-4",
+  "chapter": 11,
+  "chapter_name": "国际投资",
+  "num": 4,
+  "type": "single",
+  "stem": "按照境外投资进入东道国的方式，可以分为哪几种投资方式（ ）",
+  "options": [
+   {
+    "key": "A",
+    "text": "垂直式境外投资"
+   },
+   {
+    "key": "B",
+    "text": "BOT 投资"
+   },
+   {
+    "key": "C",
+    "text": "多角化境外投资"
+   },
+   {
+    "key": "D",
+    "text": "跨国并购和新建投资"
+   }
+  ],
+  "answer": "D",
+  "answer_text": "跨国并购和新建投资",
+  "his_answer": "D（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "按进入东道国的方式分，就是跨国并购（买现成的企业）和新建投资（重新建一个新企业）。20 世纪 90 年代以来，跨国并购已取代新建投资成为国际直接投资的主要方式。",
+  "incomplete": false
+ },
+ {
+  "id": "ch11-5",
+  "chapter": 11,
+  "chapter_name": "国际投资",
+  "num": 5,
+  "type": "judge",
+  "stem": "一般地说，独资经营企业不是外国的企业、外国的法人，而是东道国的企业和东道国的法人。",
+  "options": [],
+  "answer": "对",
+  "answer_text": "对",
+  "his_answer": "对（✓ 答对）",
+  "was_wrong": false,
+  "analysis": "独资经营企业是在东道国注册成立的，按东道国法律算东道国的企业和法人，不是外国法人。---",
+  "incomplete": false
+ }
+];
+const CH_NAMES = {1:"第一章 投资概念",2:"第二章 投资规模",3:"第三章 投资结构",4:"第四章 投资环境",5:"第五章 投资体制",6:"第六章 融资方式",8:"第八章 项目管理",9:"第九章 产权投资",10:"第十章 投资战略",11:"第十一章 国际投资"};
+
+const MODES = [
+  {id:"all", label:"全部 178"},
+  {id:"wrong", label:"错题 ★ 31"},
+  {id:"single", label:"选择题"},
+  {id:"judge", label:"判断题"},
+  {id:"flash", label:"自测卡"},
+];
+let mode = "all", chapter = 0, shuffle = true;
+let list = [], idx = 0, answered = false, okCount = 0, noCount = 0;
+let wrongIds = new Set(JSON.parse(localStorage.getItem("tj_wrong") || "[]"));
+
+function saveWrong(){ try{ localStorage.setItem("tj_wrong", JSON.stringify([...wrongIds])); }catch(e){} }
+
+function buildList(){
+  let pool = DATA.slice();
+  if(mode === "wrong") pool = pool.filter(q => q.was_wrong || wrongIds.has(q.id));
+  else if(mode === "single") pool = pool.filter(q => q.type === "single");
+  else if(mode === "judge") pool = pool.filter(q => q.type === "judge");
+  else if(mode === "flash") pool = pool.filter(q => q.type === "flash");
+  if(chapter) pool = pool.filter(q => q.chapter === chapter);
+  if(shuffle){
+    for(let i = pool.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
+  } else {
+    pool.sort((a,b) => a.chapter - b.chapter || a.num - b.num);
+  }
+  list = pool; idx = 0; okCount = 0; noCount = 0;
+  render();
+}
+
+function esc(s){ return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function md(s){ return esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>"); }
+
+function renderModes(){
+  document.getElementById("modes").innerHTML = MODES.map(m =>
+    `<button class="chip${m.id===mode?" on":""}" data-m="${m.id}">${m.label}</button>`).join("");
+  document.querySelectorAll("#modes .chip").forEach(c => c.onclick = () => { mode = c.dataset.m; renderModes(); buildList(); });
+  const sel = document.getElementById("chapter");
+  const chs = [...new Set(DATA.map(q => q.chapter))].sort((a,b)=>a-b);
+  sel.innerHTML = `<option value="0">全部章节</option>` + chs.map(c => `<option value="${c}"${c===chapter?" selected":""}>第${c}章 ${CH_NAMES[c].replace(/^第.+? /,"")}</option>`).join("");
+  sel.onchange = () => { chapter = +sel.value; buildList(); };
+  const sh = document.getElementById("shuffle");
+  sh.className = "shuffle" + (shuffle ? " on" : "");
+  sh.onclick = () => { shuffle = !shuffle; sh.className = "shuffle" + (shuffle ? " on" : ""); buildList(); };
+}
+
+function typeLabel(q){
+  return q.type === "single" ? "选择题" : q.type === "judge" ? "判断题" : "自测卡";
+}
+
+function render(){
+  const card = document.getElementById("card");
+  document.getElementById("nextbar").classList.remove("show");
+  document.getElementById("ok").textContent = okCount;
+  document.getElementById("no").textContent = noCount;
+  if(!list.length){
+    document.getElementById("pos").textContent = "没有符合条件的题";
+    document.getElementById("bar").style.width = "0%";
+    card.innerHTML = `<div class="end"><p>这个筛选下没有题，换个模式或章节试试。</p></div>`;
+    return;
+  }
+  if(idx >= list.length){ return renderEnd(); }
+  const q = list[idx];
+  answered = false;
+  document.getElementById("pos").textContent = `第 ${idx+1} / ${list.length} 题`;
+  document.getElementById("bar").style.width = (idx / list.length * 100) + "%";
+  let inner = `<div class="meta"><span class="tag">第${q.chapter}章 ${esc(q.chapter_name)}</span><span class="tag type">${typeLabel(q)}</span>${q.was_wrong?'<span class="tag star">★ 你做错过</span>':""}</div>
+    <p class="stem">${md(q.stem)}</p>`;
+  if(q.type === "single"){
+    inner += q.options.map(o => `<button class="opt" data-k="${o.key}"><span class="k">${o.key}</span><span>${md(o.text)}</span></button>`).join("");
+  } else if(q.type === "judge"){
+    inner += `<div class="tfrow"><button class="tf" data-k="对">对 ✓</button><button class="tf" data-k="错">错 ✗</button></div>`;
+  } else {
+    inner += `<button class="reveal" id="reveal">想一想，点我看答案</button><div id="flashbox"></div>`;
+  }
+  inner += `<div id="feedback"></div>`;
+  card.innerHTML = inner;
+
+  if(q.type === "single" || q.type === "judge"){
+    card.querySelectorAll("[data-k]").forEach(btn => btn.onclick = () => answer(q, btn.dataset.k));
+  } else {
+    document.getElementById("reveal").onclick = () => revealFlash(q);
+  }
+}
+
+function answer(q, picked){
+  if(answered) return; answered = true;
+  const good = picked === q.answer;
+  if(good){ okCount++; } else { noCount++; wrongIds.add(q.id); saveWrong(); }
+  document.querySelectorAll("#card [data-k]").forEach(btn => {
+    btn.disabled = true;
+    if(btn.dataset.k === q.answer) btn.classList.add("correct");
+    else if(btn.dataset.k === picked) btn.classList.add("wrong");
+  });
+  showFeedback(q, good);
+  document.getElementById("ok").textContent = okCount;
+  document.getElementById("no").textContent = noCount;
+  document.getElementById("bar").style.width = ((idx+1) / list.length * 100) + "%";
+  document.getElementById("nextbar").classList.add("show");
+}
+
+function revealFlash(q){
+  if(answered) return; answered = true;
+  const box = document.getElementById("flashbox");
+  box.innerHTML = `<div class="answer-line">正确答案：<span class="ok">${esc(q.answer)}${q.answer_text ? ". " + md(q.answer_text) : ""}</span></div>
+    ${q.analysis ? `<div class="analysis">${md(q.analysis)}</div>` : ""}
+    ${q.was_wrong && q.his_answer ? `<div class="his">11 月 5 日你选了：${esc(q.his_answer)}</div>` : ""}
+    <div class="grade"><button class="know" id="know">会了 ✓</button><button class="dunno" id="dunno">还不会 ✗</button></div>`;
+  document.getElementById("reveal").style.display = "none";
+  document.getElementById("know").onclick = () => { okCount++; document.getElementById("ok").textContent = okCount; finishFlash(); };
+  document.getElementById("dunno").onclick = () => { noCount++; wrongIds.add(q.id); saveWrong(); document.getElementById("no").textContent = noCount; finishFlash(); };
+}
+function finishFlash(){
+  document.querySelectorAll("#flashbox .grade button").forEach(b => b.disabled = true);
+  document.getElementById("bar").style.width = ((idx+1) / list.length * 100) + "%";
+  document.getElementById("nextbar").classList.add("show");
+}
+
+function showFeedback(q, good){
+  const fb = document.getElementById("feedback");
+  let html = `<div class="answer-line">${good ? "✅ 答对了" : "❌ 答错了"}　正确答案：<span class="ok">${esc(q.answer)}${q.answer_text ? ". " + md(q.answer_text) : ""}</span></div>`;
+  if(q.analysis) html += `<div class="analysis">${md(q.analysis)}</div>`;
+  if(q.was_wrong && q.his_answer) html += `<div class="his">11 月 5 日你选了：${esc(q.his_answer)}</div>`;
+  fb.innerHTML = html;
+}
+
+function renderEnd(){
+  const total = list.length;
+  const rate = total ? Math.round(okCount / total * 100) : 0;
+  const wrongs = list.filter(q => wrongIds.has(q.id));
+  document.getElementById("pos").textContent = "已完成";
+  document.getElementById("bar").style.width = "100%";
+  const card = document.getElementById("card");
+  card.innerHTML = `<div class="end">
+    <div style="font-size:15px;color:#8a8578">本轮正确率</div>
+    <div class="big">${rate}%</div>
+    <p>答对 ${okCount} / 共 ${total} 题${wrongs.length ? ` · 错题 ${wrongs.length} 道已记入错题本` : " · 全对，稳了"}</p>
+    ${wrongs.length ? `<h3>本次错题（点开是答案）</h3>` + wrongs.map(q =>
+      `<div class="wrongitem"><div>第${q.chapter}章 · ${md(q.stem)}</div><div class="a">答案：${esc(q.answer)}${q.answer_text ? ". " + md(q.answer_text) : ""}</div></div>`).join("") : ""}
+    <div class="endbtns">
+      ${wrongs.length ? `<button class="primary" id="retry">只练错题</button>` : ""}
+      <button class="ghost" id="again">再刷一轮</button>
+    </div>
+  </div>`;
+  document.getElementById("again").onclick = () => buildList();
+  const rt = document.getElementById("retry");
+  if(rt) rt.onclick = () => { mode = "wrong"; renderModes(); buildList(); };
+}
+
+document.getElementById("nextbtn").onclick = () => { idx++; render(); };
+renderModes();
+buildList();
+</script>
+</body>
+</html>
